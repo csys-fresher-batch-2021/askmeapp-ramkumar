@@ -5,6 +5,11 @@ import static in.ramkumar.util.StringUtil.*;
 import static in.ramkumar.validator.StringValidator.*;
 
 public class QuestionValidator {
+	
+	private QuestionValidator() {
+		//Default constructor
+	}
+	
 	/**
 	 * Question Validation. This method validates the given question. Question
 	 * should not be null, empty, and also the length of the question should not be

@@ -1,6 +1,10 @@
 package in.ramkumar.util;
 
 public class StringUtil {
+	
+	private StringUtil() {
+		//Default constructor
+	}
 
 	/**
 	 * @param string

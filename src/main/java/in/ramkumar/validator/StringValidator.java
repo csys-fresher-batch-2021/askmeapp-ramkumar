@@ -1,6 +1,11 @@
 package in.ramkumar.validator;
 
 public class StringValidator {
+	
+	private StringValidator() {
+		//Default constructor
+	}
+	
 	/**
 	 * This method checks the given string with null and empty.
 	 * 

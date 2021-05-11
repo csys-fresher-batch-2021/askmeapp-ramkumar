@@ -7,6 +7,10 @@ import in.ramkumar.model.Question;
 import in.ramkumar.validator.QuestionValidator;
 
 public class QuestionService {
+	
+	private QuestionService() {
+		//Default constructor.
+	}
 
 	private static List<Question> questionList = new ArrayList<Question>();
 
