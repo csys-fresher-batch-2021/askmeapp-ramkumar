@@ -9,7 +9,7 @@ public class StringValidator {
 	 */
 	public static boolean checkingForNullAndEmpty(String string) {
 		boolean validString = false;
-		if (string != null && string.trim().equals(string)) {
+		if (string != null && !string.trim().equals("")) {
 			validString = true;
 		}
 		return validString;

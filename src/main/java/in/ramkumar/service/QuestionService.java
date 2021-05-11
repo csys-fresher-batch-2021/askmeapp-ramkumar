@@ -25,5 +25,13 @@ public class QuestionService {
 		}
 		return validQuestion;
 	}
+	
+	/**
+	 * 
+	 * @return Returns all the questions.
+	 */
+	public static List<Question> getAllQuestions() {
+		return questionList;
+	}
 
 }
