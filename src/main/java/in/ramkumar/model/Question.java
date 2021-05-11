@@ -2,7 +2,7 @@ package in.ramkumar.model;
 
 public class Question {
 	
-	private String question;
+	private String questionName;
 	private String description;
 	
 	/**
@@ -10,7 +10,7 @@ public class Question {
 	 * @return
 	 */
 	public String getQuestion() {
-		return question;
+		return questionName;
 	}
 	
 	/**
@@ -18,8 +18,8 @@ public class Question {
 	 * @param question
 	 * @return
 	 */
-	public void setQuestion(String question) {
-		this.question = question;
+	public void setQuestionName(String question) {
+		this.questionName = question;
 	}
 	
 	/**
@@ -44,7 +44,7 @@ public class Question {
 	 */
 	@Override
 	public String toString() {
-		return "Question [question=" + question + ", description=" + description + "]";
+		return "Question [question=" + questionName + ", description=" + description + "]";
 	}
 	
 }

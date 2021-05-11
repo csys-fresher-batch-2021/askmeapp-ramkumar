@@ -28,7 +28,6 @@ public class QuestionValidator {
 				validQuestion = true;
 			}
 		} catch (Exception e) {
-			validQuestion = false;
 		}
 		return validQuestion;
 	}
@@ -51,7 +50,6 @@ public class QuestionValidator {
 				validDescription = true;
 			}
 		} catch (Exception e) {
-			validDescription = false;
 		}
 		return validDescription;
 	}

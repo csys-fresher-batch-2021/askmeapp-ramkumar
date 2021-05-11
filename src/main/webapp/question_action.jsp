@@ -11,10 +11,10 @@
 </head>
 <body>
 		<%
-			String question = request.getParameter("question");
+		String question = request.getParameter("question");
 			String description = request.getParameter("description");
 			Question questionObject = new Question();
-			questionObject.setQuestion(question);
+			questionObject.setQuestionName(question);
 			questionObject.setDescription(description);
 			boolean validQuestion = QuestionService.addQuestion(questionObject);
 			if(validQuestion){

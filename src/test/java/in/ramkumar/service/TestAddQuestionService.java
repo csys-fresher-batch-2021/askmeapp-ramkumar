@@ -33,7 +33,7 @@ public class TestAddQuestionService {
 	@Test
 	public void testAddQuestionWithValidQuestionAndDescription() {
 		Question question = new Question();
-		question.setQuestion(validQuestion);
+		question.setQuestionName(validQuestion);
 		question.setDescription(validDescription);
 		boolean validQuestion = QuestionService.addQuestion(question);
 		assertTrue(validQuestion);
@@ -45,7 +45,7 @@ public class TestAddQuestionService {
 	@Test
 	public void testAddQuestionWithValidQuestionAndNullDescription() {
 		Question question = new Question();
-		question.setQuestion(validQuestion);
+		question.setQuestionName(validQuestion);
 		question.setDescription(null);
 		boolean validQuestion = QuestionService.addQuestion(question);
 		assertFalse(validQuestion);
@@ -57,7 +57,7 @@ public class TestAddQuestionService {
 	@Test
 	public void testAddQuestionWithNullQuestionAndValidDescription() {
 		Question question = new Question();
-		question.setQuestion(null);
+		question.setQuestionName(null);
 		question.setDescription(validDescription);
 		boolean validQuestion = QuestionService.addQuestion(question);
 		assertFalse(validQuestion);
@@ -69,7 +69,7 @@ public class TestAddQuestionService {
 	@Test
 	public void testAddQuestionWithNullQuestionAndNullDescription() {
 		Question question = new Question();
-		question.setQuestion(null);
+		question.setQuestionName(null);
 		question.setDescription(null);
 		boolean validQuestion = QuestionService.addQuestion(question);
 		assertFalse(validQuestion);
@@ -81,7 +81,7 @@ public class TestAddQuestionService {
 	@Test
 	public void testAddQuestionWithEmptyQuestionAndEmptyDescription() {
 		Question question = new Question();
-		question.setQuestion("");
+		question.setQuestionName("");
 		question.setDescription("");
 		boolean validQuestion = QuestionService.addQuestion(question);
 		assertFalse(validQuestion);
@@ -93,7 +93,7 @@ public class TestAddQuestionService {
 	@Test
 	public void testAddQuestionWithGreaterThan300And600Letters() {
 		Question question = new Question();
-		question.setQuestion(questionWithGreaterThan300Letters);
+		question.setQuestionName(questionWithGreaterThan300Letters);
 		question.setDescription(descriptionWithGreaterThan600Letters);
 		boolean validQuestion = QuestionService.addQuestion(question);
 		assertFalse(validQuestion);
