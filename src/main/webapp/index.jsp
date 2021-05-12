@@ -8,7 +8,7 @@
 	<main class="container-fluid">
 	<h3>Welcome To AskMe Project</h3>
 	<jsp:include page="message.jsp"></jsp:include>
-	<form action="question_action.jsp">
+	<form action="AddQuestionServlet">
 		<label for="question">Enter your question</label> <br>
 		<input type="text" name="question" id="question" required placeholder="Enter question"
 			autofocus> <br/> 

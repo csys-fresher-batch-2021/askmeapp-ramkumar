@@ -18,19 +18,13 @@ public class QuestionValidator {
 	 * @param questionObject
 	 * @return Returns true iff it is a valid question.
 	 */
-	public static boolean validateQuestion(Question questionObject) {
+	public static void validateQuestion(Question questionObject) {
 		String question = questionObject.getQuestion();
-		boolean validQuestion = false;
 		Integer numberOfCharactersForQuestion = 300;
-		try {
-			int questionLength = getLength(question);
-			if (checkingForNullAndEmpty(question) && questionLength <= numberOfCharactersForQuestion) {
-				validQuestion = true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		int questionLength = getLength(question);
+		if (questionLength < 0 || questionLength > numberOfCharactersForQuestion) {
+			throw new IllegalArgumentException("Invalid Question");
 		}
-		return validQuestion;
 	}
 
 	/**
@@ -41,19 +35,13 @@ public class QuestionValidator {
 	 * @param questionObject
 	 * @return Returns true iff it is a valid description.
 	 */
-	public static boolean validateDescription(Question questionObject) {
-		boolean validDescription = false;
+	public static void validateDescription(Question questionObject) {
 		String description = questionObject.getDescription();
 		Integer numberOfCharactersForDescription = 600;
-		try {
-			int descriptionLength = getLength(description);
-			if (checkingForNullAndEmpty(description) && descriptionLength <= numberOfCharactersForDescription) {
-				validDescription = true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		int descriptionLength = getLength(description);
+		if (descriptionLength < 0 || descriptionLength > numberOfCharactersForDescription) {
+			throw new IllegalArgumentException("Invalid Description");
 		}
-		return validDescription;
 	}
 
 }

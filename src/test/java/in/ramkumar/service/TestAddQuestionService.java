@@ -1,7 +1,6 @@
 package in.ramkumar.service;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -35,8 +34,11 @@ public class TestAddQuestionService {
 		Question question = new Question();
 		question.setQuestionName(validQuestion);
 		question.setDescription(validDescription);
-		boolean validQuestion = QuestionService.addQuestion(question);
-		assertTrue(validQuestion);
+		try {
+			QuestionService.addQuestion(question);
+		} catch (IllegalArgumentException e) {
+			fail();
+		}
 	}
 
 	/**
@@ -47,8 +49,12 @@ public class TestAddQuestionService {
 		Question question = new Question();
 		question.setQuestionName(validQuestion);
 		question.setDescription(null);
-		boolean validQuestion = QuestionService.addQuestion(question);
-		assertFalse(validQuestion);
+		try {
+			QuestionService.addQuestion(question);
+		} catch (IllegalArgumentException e) {
+			String message = e.getMessage();
+			assertEquals("Null value not accepted", message);
+		}
 	}
 	
 	/**
@@ -59,8 +65,12 @@ public class TestAddQuestionService {
 		Question question = new Question();
 		question.setQuestionName(null);
 		question.setDescription(validDescription);
-		boolean validQuestion = QuestionService.addQuestion(question);
-		assertFalse(validQuestion);
+		try {
+			QuestionService.addQuestion(question);
+		} catch (IllegalArgumentException e) {
+			String message = e.getMessage();
+			assertEquals("Null value not accepted", message);
+		}
 	}
 	
 	/**
@@ -71,8 +81,12 @@ public class TestAddQuestionService {
 		Question question = new Question();
 		question.setQuestionName(null);
 		question.setDescription(null);
-		boolean validQuestion = QuestionService.addQuestion(question);
-		assertFalse(validQuestion);
+		try {
+			QuestionService.addQuestion(question);
+		} catch (IllegalArgumentException e) {
+			String message = e.getMessage();
+			assertEquals("Null value not accepted", message);
+		}
 	}
 	
 	/**
@@ -83,20 +97,44 @@ public class TestAddQuestionService {
 		Question question = new Question();
 		question.setQuestionName("");
 		question.setDescription("");
-		boolean validQuestion = QuestionService.addQuestion(question);
-		assertFalse(validQuestion);
+		try {
+			QuestionService.addQuestion(question);
+		} catch (IllegalArgumentException e) {
+			String message = e.getMessage();
+			assertEquals("Empty value not accepted", message);
+		}
 	}
 	
 	/**
 	 * Validation of question with >300 letters and description with >600 letters
 	 */
 	@Test
-	public void testAddQuestionWithGreaterThan300And600Letters() {
+	public void testAddQuestionWithGreaterThan300() {
 		Question question = new Question();
 		question.setQuestionName(questionWithGreaterThan300Letters);
+		question.setDescription(validQuestion);
+		try {
+			QuestionService.addQuestion(question);
+		} catch (IllegalArgumentException e) {
+			String message = e.getMessage();
+			assertEquals("Invalid Question", message);
+		}
+	}
+	
+	/**
+	 * Validation of question with description with >600 letters
+	 */
+	@Test
+	public void testAddDescriptionWithGreaterThan600Letters() {
+		Question question = new Question();
+		question.setQuestionName(validQuestion);
 		question.setDescription(descriptionWithGreaterThan600Letters);
-		boolean validQuestion = QuestionService.addQuestion(question);
-		assertFalse(validQuestion);
+		try {
+			QuestionService.addQuestion(question);
+		} catch (IllegalArgumentException e) {
+			String message = e.getMessage();
+			assertEquals("Invalid Description", message);
+		}
 	}
 
 }
