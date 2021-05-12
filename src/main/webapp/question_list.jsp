@@ -17,7 +17,7 @@
 	for (Question questionObj : questionList) {
 	%>
 
-	<h4><%=questionObj.getQuestion()%></h4>
+	<h4><%=questionObj.getQuestionName()%></h4>
 	<h4><%=questionObj.getDescription()%></h4>
 	<%
 	}

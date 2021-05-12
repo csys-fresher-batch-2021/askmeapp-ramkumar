@@ -9,7 +9,7 @@ public class Question {
 	 * This method returns the question.
 	 * @return
 	 */
-	public String getQuestion() {
+	public String getQuestionName() {
 		return questionName;
 	}
 	

@@ -9,6 +9,10 @@ import in.ramkumar.validator.QuestionValidator;
 public class QuestionService {
 
 	private static final List<Question> questionList = new ArrayList<>();
+	
+	private QuestionService() {
+		//Default constructor
+	}
 
 	/**
 	 * Add Question. This method validates the question, if it is a valid question

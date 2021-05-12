@@ -19,7 +19,7 @@ public class QuestionValidator {
 	 * @return Returns true iff it is a valid question.
 	 */
 	public static void validateQuestion(Question questionObject) {
-		String question = questionObject.getQuestion();
+		String question = questionObject.getQuestionName();
 		Integer numberOfCharactersForQuestion = 300;
 		int questionLength = getLength(question);
 		if (questionLength < 0 || questionLength > numberOfCharactersForQuestion) {
