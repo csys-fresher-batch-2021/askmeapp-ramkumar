@@ -10,7 +10,6 @@ public class StringValidator {
 	 * This method checks the given string with null and empty.
 	 * 
 	 * @param string
-	 * @return Returns true iff the given string is not null and empty.
 	 */
 	public static void checkingForNullAndEmpty(String string) {
 		if (string == null) {

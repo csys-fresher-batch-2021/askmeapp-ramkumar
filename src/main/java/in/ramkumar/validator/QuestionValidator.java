@@ -16,7 +16,6 @@ public class QuestionValidator {
 	 * > 300
 	 * 
 	 * @param questionObject
-	 * @return Returns true iff it is a valid question.
 	 */
 	public static void validateQuestion(Question questionObject) {
 		String question = questionObject.getQuestionName();
@@ -33,7 +32,6 @@ public class QuestionValidator {
 	 * should not be > 600
 	 * 
 	 * @param questionObject
-	 * @return Returns true iff it is a valid description.
 	 */
 	public static void validateDescription(Question questionObject) {
 		String description = questionObject.getDescription();

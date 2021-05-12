@@ -19,7 +19,6 @@ public class QuestionService {
 	 * then it will be added to questionList.
 	 * 
 	 * @param question
-	 * @return Returns true iff it is a valid Question object.
 	 */
 	public static void addQuestion(Question question) {
 		QuestionValidator.validateQuestion(question);
