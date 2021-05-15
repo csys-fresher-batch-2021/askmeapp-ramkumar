@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import in.ramkumar.model.Answer;
-import in.ramkumar.model.Question;
 import in.ramkumar.service.AnswerService;
 
 /**
@@ -31,9 +30,9 @@ public class AddAnswerServlet extends HttpServlet {
 		answerObject.setAnswerName(answer);
 		try {
 			AnswerService.addAnswer(question, answerObject);
-			response.sendRedirect("question_list.jsp");
+			response.sendRedirect("question_list.jsp?infoMessage=Answer Added");
 		} catch (IllegalArgumentException e) {
-			response.sendRedirect("answer.jsp");
+			response.sendRedirect("answer.jsp?errorMessage=" + e.getMessage());
 		}
 	}
 
