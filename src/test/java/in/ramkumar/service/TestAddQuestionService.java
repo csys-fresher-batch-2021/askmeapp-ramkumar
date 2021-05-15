@@ -109,7 +109,7 @@ public class TestAddQuestionService {
 	 * Validation of question with >300 letters and description with >600 letters
 	 */
 	@Test
-	public void testAddQuestionWithGreaterThan300() {
+	public void testAddQuestionWithGreaterThan300Letters() {
 		Question question = new Question();
 		question.setQuestionName(questionWithGreaterThan300Letters);
 		question.setDescription(validQuestion);

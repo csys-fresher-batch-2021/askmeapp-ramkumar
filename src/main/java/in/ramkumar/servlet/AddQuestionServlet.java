@@ -31,7 +31,7 @@ public class AddQuestionServlet extends HttpServlet {
 		questionObject.setDescription(description);
 		try {
 			QuestionService.addQuestion(questionObject);
-			response.sendRedirect("index.jsp?infoMessage=Question Added");
+			response.sendRedirect("question_list.jsp?infoMessage=Question Added");
 		} catch (IllegalArgumentException e) {
 			String message = e.getMessage();
 			response.sendRedirect("index.jsp?errorMessage=" + message);
