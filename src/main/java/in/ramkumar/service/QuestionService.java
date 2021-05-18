@@ -5,13 +5,14 @@ import java.util.List;
 
 import in.ramkumar.model.Question;
 import in.ramkumar.validator.QuestionValidator;
+import in.ramkumar.validator.StringValidator;
 
 public class QuestionService {
 
-	private static final List<Question> questionList = new ArrayList<>();
-	
+	private static List<Question> questionList = new ArrayList<>();
+
 	private QuestionService() {
-		//Default constructor
+		// Default constructor.
 	}
 
 	/**
@@ -22,7 +23,10 @@ public class QuestionService {
 	 */
 	public static void addQuestion(Question question) {
 		QuestionValidator.validateQuestion(question);
-		QuestionValidator.validateDescription(question);
+		String description = question.getDescription();
+		if (description != null && !description.trim().equals("")) {
+			QuestionValidator.validateDescription(question);
+		}
 		questionList.add(question);
 	}
 
@@ -38,6 +42,33 @@ public class QuestionService {
 	 */
 	public static int getNumberOfQuestion() {
 		return questionList.size();
+	}
+
+	/**
+	 * Validates the given string.
+	 * 
+	 * @param questionName
+	 * @return Returns the question index for the given question.
+	 */
+	public static int getQuestionIndexWithQustionName(String questionName) {
+		int questionIndex = -1; // There is no question.
+		StringValidator.checkingForNullAndEmpty(questionName);
+		for (Question question : questionList) {
+			if (question.getQuestionName().equals(questionName)) {
+				questionIndex = questionList.indexOf(question);
+				break;
+			}
+		}
+		return questionIndex;
+	}
+
+	/**
+	 * @param questionName
+	 * @return Returns the Question object for the given question.
+	 */
+	public static Question getQuestion(String questionName) {
+		int questionIndex = getQuestionIndexWithQustionName(questionName);
+		return questionList.get(questionIndex);
 	}
 
 }
