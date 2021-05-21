@@ -2,8 +2,11 @@ package in.ramkumar.service;
 
 import static org.junit.Assert.*;
 
+import java.sql.SQLException;
+
 import org.junit.Test;
 
+import in.ramkumar.exception.ServiceException;
 import in.ramkumar.model.Answer;
 import in.ramkumar.model.Question;
 
@@ -18,11 +21,14 @@ public class TestAddAnswerService {
 		Question question = new Question();
 		question.setQuestionName("What is Java?");
 		question.setDescription("What is meant by Java?");
+		QuestionService questionService = new QuestionService();
 		try {
-			QuestionService.addQuestion(question);
-		} catch (Exception e) {
+			questionService.addQuestion(question);
+		} catch (ServiceException e) {
+			e.printStackTrace();
 			fail();
 		}
+
 		return question;
 	}
 
@@ -34,10 +40,12 @@ public class TestAddAnswerService {
 		Question question = addQuestion();
 		Answer answer = new Answer();
 		answer.setAnswerName("Java is a independent programming language");
+		AnswerService answerService = new AnswerService();
 		try {
-			AnswerService.addAnswer(question.getQuestionName(), answer);
-		} catch (IllegalArgumentException e) {
+			answerService.addAnswer(question.getQuestionName(), answer);
+		} catch (ServiceException e) {
 			fail();
+			e.printStackTrace();
 		}
 	}
 
@@ -49,10 +57,11 @@ public class TestAddAnswerService {
 		Question question = addQuestion();
 		Answer answer = new Answer();
 		answer.setAnswerName(null);
+		AnswerService answerService = new AnswerService();
 		try {
-			AnswerService.addAnswer(question.getQuestionName(), answer);
-		} catch (IllegalArgumentException e) {
-			assertEquals("Null value not accepted", e.getMessage());
+			answerService.addAnswer(question.getQuestionName(), answer);
+		} catch (ServiceException e) {
+			assertEquals("Unable to add answer", e.getMessage());
 		}
 	}
 
@@ -64,10 +73,11 @@ public class TestAddAnswerService {
 		Question question = addQuestion();
 		Answer answer = new Answer();
 		answer.setAnswerName("");
+		AnswerService answerService = new AnswerService();
 		try {
-			AnswerService.addAnswer(question.getQuestionName(), answer);
-		} catch (IllegalArgumentException e) {
-			assertEquals("Empty value not accepted", e.getMessage());
+			answerService.addAnswer(question.getQuestionName(), answer);
+		} catch (ServiceException e) {
+			assertEquals("Unable to add answer", e.getMessage());
 		}
 	}
 

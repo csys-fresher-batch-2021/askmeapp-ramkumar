@@ -1,3 +1,4 @@
+<%@page import="in.ramkumar.service.AnswerService"%>
 <%@page import="in.ramkumar.model.Answer"%>
 <%@page import="in.ramkumar.service.QuestionService"%>
 <%@page import="in.ramkumar.model.Question"%>
@@ -13,7 +14,9 @@
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
 	<%
-	List<Question> questionList = QuestionService.getAllQuestions();
+	QuestionService questionService = new QuestionService();
+	AnswerService answerService = new AnswerService();
+	List<Question> questionList = questionService.getAllQuestions();
 	for (Question questionObj : questionList) {
 	%>
 	<h5><%=questionObj.getQuestionName()%></h5>
@@ -27,11 +30,11 @@
 	<a href="answer.jsp?question=<%=questionObj.getQuestionName()%>"
 		class="btn btn-secondary">Answer</a>
 	<%
-	if (questionObj.getAnswerList() != null) {
+	List<Answer> answerList = answerService.getAllAnswers(questionObj.getQuestionName());
+	if (answerList.size() > 0) {
 	%>
 	<h5>Answers :</h5>
 	<%
-	List<Answer> answerList = questionObj.getAnswerList();
 	for (Answer answer : answerList) {
 		out.println("<h6>" + answer.getAnswerName() + "</h6>");
 	}

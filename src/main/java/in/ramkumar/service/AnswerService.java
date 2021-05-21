@@ -1,17 +1,19 @@
 package in.ramkumar.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import in.ramkumar.dao.AnswerDAO;
+import in.ramkumar.exception.UtilException;
+import in.ramkumar.exception.DBException;
+import in.ramkumar.exception.ServiceException;
+import in.ramkumar.exception.ValidationException;
 import in.ramkumar.model.Answer;
-import in.ramkumar.model.Question;
 import in.ramkumar.util.StringUtil;
+import in.ramkumar.validator.StringValidator;
 
 public class AnswerService {
 
-	private AnswerService() {
-		// Default constructor
-	}
+	private final AnswerDAO answerDAO = new AnswerDAO();
 
 	/**
 	 * Add answer. Answer should not be null, empty. If it is a valid answer it will
@@ -19,17 +21,32 @@ public class AnswerService {
 	 * 
 	 * @param answer
 	 */
-	public static void addAnswer(String questionName, Answer answerObject) {
-		int answerLength = StringUtil.getLength(answerObject.getAnswerName());
-		if (answerLength > 0) {
-			Question question = QuestionService.getQuestion(questionName);
-			List<Answer> answer = question.getAnswerList();
-			if (answer == null) {
-				answer = new ArrayList<>();
+	public void addAnswer(String questionName, Answer answerObject) {
+		try {
+			int answerLength = StringUtil.getLength(answerObject.getAnswerName());
+			if (answerLength > 0) {
+				answerDAO.addAnswer(questionName, answerObject);
 			}
-			answer.add(answerObject);
-			question.setAnswerList(answer);
+		} catch (DBException | UtilException e) {
+			e.printStackTrace();
+			throw new ServiceException("Unable to add answer");
 		}
+	}
+
+	/**
+	 * @param questionName
+	 * @return Returns list of answers for the given question.
+	 */
+	public List<Answer> getAllAnswers(String questionName) {
+		List<Answer> answerList = null;
+		try {
+			StringValidator.checkingForNullAndEmpty(questionName);
+			 answerList = answerDAO.getAllAnswers(questionName);
+		} catch (ValidationException | DBException e) {
+			e.printStackTrace();
+			throw new ServiceException("Unable to get anwers");
+		}
+		return answerList;
 	}
 
 }

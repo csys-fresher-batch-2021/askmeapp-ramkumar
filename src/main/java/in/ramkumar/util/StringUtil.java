@@ -1,5 +1,7 @@
 package in.ramkumar.util;
 
+import in.ramkumar.exception.UtilException;
+import in.ramkumar.exception.ValidationException;
 import in.ramkumar.validator.StringValidator;
 
 public class StringUtil {
@@ -13,8 +15,15 @@ public class StringUtil {
 	 * @return Returns the length of the given string.
 	 */
 	public static int getLength(String string) {
-		StringValidator.checkingForNullAndEmpty(string);
-		return string.trim().length();
+		int length = 0;
+		try {
+			StringValidator.checkingForNullAndEmpty(string);
+			length = string.trim().length();
+		} catch (ValidationException e) {
+			e.printStackTrace();
+			throw new UtilException("Unable to get length");
+		}
+		return length;
 	}
 
 }

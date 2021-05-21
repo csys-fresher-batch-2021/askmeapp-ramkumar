@@ -1,12 +1,15 @@
 package in.ramkumar.servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import in.ramkumar.exception.ServiceException;
 import in.ramkumar.model.Question;
 import in.ramkumar.service.QuestionService;
 
@@ -29,10 +32,11 @@ public class AddQuestionServlet extends HttpServlet {
 		Question questionObject = new Question();
 		questionObject.setQuestionName(question);
 		questionObject.setDescription(description);
+		QuestionService questionService = new QuestionService();
 		try {
-			QuestionService.addQuestion(questionObject);
+			questionService.addQuestion(questionObject);
 			response.sendRedirect("question_list.jsp?infoMessage=Question Added");
-		} catch (IllegalArgumentException e) {
+		} catch (ServiceException e) {
 			String message = e.getMessage();
 			response.sendRedirect("index.jsp?errorMessage=" + message);
 		}

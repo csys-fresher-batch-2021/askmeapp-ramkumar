@@ -1,19 +1,20 @@
 package in.ramkumar.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import in.ramkumar.dao.QuestionDAO;
+import in.ramkumar.exception.DBException;
+import in.ramkumar.exception.ServiceException;
+import in.ramkumar.exception.UtilException;
+import in.ramkumar.exception.ValidationException;
 import in.ramkumar.model.Question;
 import in.ramkumar.validator.QuestionValidator;
 import in.ramkumar.validator.StringValidator;
 
 public class QuestionService {
 
-	private static List<Question> questionList = new ArrayList<>();
-
-	private QuestionService() {
-		// Default constructor.
-	}
+	private static final String UNABLE_TO_ADD_QUESTION = "Unable to add question";
+	private final QuestionDAO questionDAO = new QuestionDAO();
 
 	/**
 	 * Add Question. This method validates the question, if it is a valid question
@@ -21,54 +22,68 @@ public class QuestionService {
 	 * 
 	 * @param question
 	 */
-	public static void addQuestion(Question question) {
-		QuestionValidator.validateQuestion(question);
+	public void addQuestion(Question question) {
+		Question questionObject = null;
 		String description = question.getDescription();
-		if (description != null && !description.trim().equals("")) {
-			QuestionValidator.validateDescription(question);
+		try {
+			QuestionValidator.validateQuestion(question);
+			questionObject = getQuestion(question.getQuestionName());
+			if (questionObject != null) {
+				throw new ServiceException(UNABLE_TO_ADD_QUESTION);
+			}
+			if (description.length() <= 0) {
+				question.setDescription(null);
+			}
+			if (description != null && !description.equals("")) {
+				QuestionValidator.validateDescription(question);
+			}
+			questionDAO.addQuestion(question);
+		} catch (DBException | ValidationException | UtilException e) {
+			e.printStackTrace();
+			throw new ServiceException(UNABLE_TO_ADD_QUESTION);
 		}
-		questionList.add(question);
 	}
 
 	/**
 	 * @return Returns list of questions.
 	 */
-	public static List<Question> getAllQuestions() {
-		return questionList;
+	public List<Question> getAllQuestions() {
+		List<Question> questionsList = null;
+		try {
+			questionsList = questionDAO.getAllQuestions();
+		} catch (DBException e) {
+			e.printStackTrace();
+			throw new ServiceException("Unable to get questions");
+		}
+		return questionsList;
 	}
 
 	/**
 	 * @return Returns number of questions in the question list.
 	 */
-	public static int getNumberOfQuestion() {
-		return questionList.size();
-	}
-
-	/**
-	 * Validates the given string.
-	 * 
-	 * @param questionName
-	 * @return Returns the question index for the given question.
-	 */
-	public static int getQuestionIndexWithQustionName(String questionName) {
-		int questionIndex = -1; // There is no question.
-		StringValidator.checkingForNullAndEmpty(questionName);
-		for (Question question : questionList) {
-			if (question.getQuestionName().equals(questionName)) {
-				questionIndex = questionList.indexOf(question);
-				break;
-			}
+	public int getNumberOfQuestion(){
+		try {
+			return getAllQuestions().size();
+		} catch (ServiceException e) {
+			e.printStackTrace();
+			throw new ServiceException("Unable to get number of questions");
 		}
-		return questionIndex;
 	}
 
 	/**
 	 * @param questionName
 	 * @return Returns the Question object for the given question.
 	 */
-	public static Question getQuestion(String questionName) {
-		int questionIndex = getQuestionIndexWithQustionName(questionName);
-		return questionList.get(questionIndex);
+	public Question getQuestion(String questionName) {
+		Question question = null;
+		try {
+			StringValidator.checkingForNullAndEmpty(questionName);
+			question = questionDAO.getQuestion(questionName);
+		} catch (ValidationException | DBException e) {
+			e.printStackTrace();
+			throw new ServiceException("Unable to get question");
+		}
+		return question;
 	}
 
 }

@@ -2,20 +2,23 @@ package in.ramkumar.service;
 
 import static org.junit.Assert.*;
 
+import java.sql.SQLException;
+
 import org.junit.Test;
 
+import in.ramkumar.exception.ServiceException;
 import in.ramkumar.model.Question;
 
 public class TestAddQuestionService {
 
 	private String validQuestion = "What is Java?";
 	private String validDescription = "Help me to answer for this to talk about it in interview";
-	
+
 	private String questionWithGreaterThan300Letters = "What is meant by Java? Why we use getters and setters? "
 			+ "What is meant by inheritance? What is method overriding? What is method overloading? "
 			+ "What is the use of default keyword in Java? What is meant by polymorphism? Why we "
 			+ "static keyword? What is meant by Java? Why we use getters and setters? Usage of polymorphism";
-	
+
 	private String descriptionWithGreaterThan600Letters = "What is meant by Java? Why we use getters and setters? "
 			+ "What is meant by inheritance? What is method overriding? What is method overloading? "
 			+ "What is the use of default keyword in Java? What is meant by polymorphism? Why we "
@@ -25,7 +28,6 @@ public class TestAddQuestionService {
 			+ "What is the use of default keyword in Java? What is meant by polymorphism? Why we "
 			+ "static keyword? What is meant by Java? Why we use getters and setters? Usage of polymorphism?";
 
-	
 	/**
 	 * Validation with valid question and valid description.
 	 */
@@ -34,9 +36,10 @@ public class TestAddQuestionService {
 		Question question = new Question();
 		question.setQuestionName(validQuestion);
 		question.setDescription(validDescription);
+		QuestionService questionService = new QuestionService();
 		try {
-			QuestionService.addQuestion(question);
-		} catch (IllegalArgumentException e) {
+			questionService.addQuestion(question);
+		} catch (ServiceException e) {
 			fail();
 		}
 	}
@@ -49,14 +52,15 @@ public class TestAddQuestionService {
 		Question question = new Question();
 		question.setQuestionName(validQuestion);
 		question.setDescription(null);
+		QuestionService questionService = new QuestionService();
 		try {
-			QuestionService.addQuestion(question);
-		} catch (IllegalArgumentException e) {
+			questionService.addQuestion(question);
+		} catch (ServiceException e) {
 			String message = e.getMessage();
-			assertEquals("Null value not accepted", message);
+			assertEquals("Unable to add question", message);
 		}
 	}
-	
+
 	/**
 	 * Validation with null question and valid description.
 	 */
@@ -65,14 +69,15 @@ public class TestAddQuestionService {
 		Question question = new Question();
 		question.setQuestionName(null);
 		question.setDescription(validDescription);
+		QuestionService questionService = new QuestionService();
 		try {
-			QuestionService.addQuestion(question);
-		} catch (IllegalArgumentException e) {
+			questionService.addQuestion(question);
+		} catch (ServiceException e) {
 			String message = e.getMessage();
-			assertEquals("Null value not accepted", message);
+			assertEquals("Unable to add question", message);
 		}
 	}
-	
+
 	/**
 	 * Validation with null question and null description.
 	 */
@@ -81,14 +86,15 @@ public class TestAddQuestionService {
 		Question question = new Question();
 		question.setQuestionName(null);
 		question.setDescription(null);
+		QuestionService questionService = new QuestionService();
 		try {
-			QuestionService.addQuestion(question);
-		} catch (IllegalArgumentException e) {
+			questionService.addQuestion(question);
+		} catch (ServiceException e) {
 			String message = e.getMessage();
-			assertEquals("Null value not accepted", message);
+			assertEquals("Unable to add question", message);
 		}
 	}
-	
+
 	/**
 	 * Validation with empty question and empty description.
 	 */
@@ -97,30 +103,32 @@ public class TestAddQuestionService {
 		Question question = new Question();
 		question.setQuestionName("");
 		question.setDescription("");
+		QuestionService questionService = new QuestionService();
 		try {
-			QuestionService.addQuestion(question);
-		} catch (IllegalArgumentException e) {
+			questionService.addQuestion(question);
+		} catch (ServiceException e) {
 			String message = e.getMessage();
-			assertEquals("Empty value not accepted", message);
+			assertEquals("Unable to add question", message);
 		}
 	}
-	
+
 	/**
 	 * Validation of question with >300 letters and description with >600 letters
 	 */
 	@Test
-	public void testAddQuestionWithGreaterThan300Letters() {
+	public void testAddQuestionWithGreaterThan300() {
 		Question question = new Question();
 		question.setQuestionName(questionWithGreaterThan300Letters);
 		question.setDescription(validQuestion);
+		QuestionService questionService = new QuestionService();
 		try {
-			QuestionService.addQuestion(question);
-		} catch (IllegalArgumentException e) {
+			questionService.addQuestion(question);
+		} catch (ServiceException e) {
 			String message = e.getMessage();
-			assertEquals("Invalid Question", message);
+			assertEquals("Unable to add question", message);
 		}
 	}
-	
+
 	/**
 	 * Validation of question with description with >600 letters
 	 */
@@ -129,11 +137,12 @@ public class TestAddQuestionService {
 		Question question = new Question();
 		question.setQuestionName(validQuestion);
 		question.setDescription(descriptionWithGreaterThan600Letters);
+		QuestionService questionService = new QuestionService();
 		try {
-			QuestionService.addQuestion(question);
-		} catch (IllegalArgumentException e) {
+			questionService.addQuestion(question);
+		} catch (ServiceException e) {
 			String message = e.getMessage();
-			assertEquals("Invalid Description", message);
+			assertEquals("Unable to add question", message);
 		}
 	}
 

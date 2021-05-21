@@ -1,3 +1,6 @@
+<%@page import="in.ramkumar.model.User"%>
+<%@page import="java.util.List"%>
+<%@page import="in.ramkumar.service.UserService"%>
 <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 <link rel="stylesheet" href="assets/css/fontawesome.min.css">
 <link rel="stylesheet" href="assets/css/style.css">
@@ -15,16 +18,16 @@
 			<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 				<li class="nav-item active"><a class="nav-link"
 					href="index.jsp">Home <span class="sr-only">(current)</span></a></li>
-				<li class="nav-item"><a class="nav-link"
-					href="question_list.jsp">Questions</a></li>
 			</ul>
 			<ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-				<li class="nav-item active"><a class="nav-link" href="#">Login</a>
-				</li>
-				<li class="nav-item"><a class="nav-link" href="#">Register</a>
-				</li>
-			</ul>
+				<li class="nav-item"><a class="nav-link"
+					href="index.jsp">Add Questions</a></li>
+				<li class="nav-item"><a class="nav-link"
+					href="question_list.jsp">List Questions</a></li>
+				<li class="nav-item"><a class="nav-link"
+					href="registration.jsp">Register</a></li>
 
+			</ul>
 		</div>
 	</nav>
 </header>
