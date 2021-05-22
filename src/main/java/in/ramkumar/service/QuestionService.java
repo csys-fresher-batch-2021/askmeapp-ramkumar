@@ -29,17 +29,19 @@ public class QuestionService {
 			QuestionValidator.validateQuestion(question);
 			questionObject = getQuestion(question.getQuestionName());
 			if (questionObject != null) {
-				throw new ServiceException(UNABLE_TO_ADD_QUESTION);
+				throw new ServiceException("Question alredy exists");
 			}
-			if (description != null && !description.equals("")) {
+			if (description != null && !description.trim().equals("")) {
 				QuestionValidator.validateDescription(question);
 				questionDAO.addQuestion(question);
 			} else {
 				question.setDescription(null);
 				questionDAO.addQuestion(question);
 			}
-		} catch (DBException | ValidationException | UtilException e) {
+		} catch (DBException e) {
 			throw new ServiceException(UNABLE_TO_ADD_QUESTION);
+		} catch (ValidationException | UtilException | ServiceException e) {
+			throw new ServiceException(e.getMessage());
 		}
 	}
 
@@ -76,8 +78,10 @@ public class QuestionService {
 		try {
 			StringValidator.checkingForNullAndEmpty(questionName);
 			question = questionDAO.getQuestion(questionName);
-		} catch (ValidationException | DBException e) {
+		} catch (DBException e) {
 			throw new ServiceException("Unable to get question");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
 		}
 		return question;
 	}

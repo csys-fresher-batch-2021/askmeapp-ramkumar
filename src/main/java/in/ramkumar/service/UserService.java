@@ -31,10 +31,10 @@ public class UserService {
 		try {
 			user = getUser(email); // Checking user already exists in the users database.
 			if (user != null) {
-				throw new ServiceException(UNABLE_TO_REGISTER_USER);
+				throw new ServiceException("Sorry, Email already exists");
 			}
 		} catch (ServiceException e) {
-			throw new ServiceException(UNABLE_TO_REGISTER_USER);
+			throw new ServiceException(e.getMessage());
 		}
 
 		/*
@@ -42,11 +42,13 @@ public class UserService {
 		 * be validated and added to the users database.
 		 */
 		try {
-				validateName(name);
-				validatePassword(password);
-				validateEmail(email);
-				userDAO.addUser(userObject);
-		} catch (ValidationException | DBException e) {
+			validateName(name);
+			validatePassword(password);
+			validateEmail(email);
+			userDAO.addUser(userObject);
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		} catch (DBException e) {
 			throw new ServiceException(UNABLE_TO_REGISTER_USER);
 		}
 		return user == null;

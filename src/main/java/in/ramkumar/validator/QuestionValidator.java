@@ -8,9 +8,6 @@ import in.ramkumar.exception.ValidationException;
 
 public class QuestionValidator {
 
-	private static final String INVALID_DESCRIPTION = "Invalid description";
-	private static final String INVALID_QUESTION = "Invalid question";
-
 	private QuestionValidator() {
 		// Default constructor
 	}
@@ -29,10 +26,10 @@ public class QuestionValidator {
 		try {
 			questionLength = getLength(question);
 		} catch (UtilException e) {
-			throw new ValidationException(INVALID_QUESTION);
+			throw new ValidationException(e.getMessage());
 		}
 		if (questionLength > numberOfCharactersForQuestion && questionLength < 0) {
-			throw new ValidationException(INVALID_QUESTION);
+			throw new ValidationException("Questoin length can't be 300");
 		}
 	}
 
@@ -50,10 +47,10 @@ public class QuestionValidator {
 		try {
 			descriptionLength = getLength(description);
 		} catch (UtilException e) {
-			throw new ValidationException(INVALID_DESCRIPTION);
+			throw new ValidationException(e.getMessage());
 		}
 		if (descriptionLength > numberOfCharactersForDescription && descriptionLength > 0) {
-			throw new ValidationException(INVALID_DESCRIPTION);
+			throw new ValidationException("Description length can't be 600");
 		}
 	}
 

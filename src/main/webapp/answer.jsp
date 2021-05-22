@@ -9,7 +9,7 @@
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
 	<main class="container-fluid">
-
+	<jsp:include page="message.jsp"></jsp:include>
 		<%
 		String questionName = request.getParameter("question");
 		%>

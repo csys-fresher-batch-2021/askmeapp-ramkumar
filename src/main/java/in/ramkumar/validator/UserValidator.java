@@ -26,10 +26,10 @@ public class UserValidator {
 			nameLength = getLength(name);
 			checkingForNullAndEmpty(name);
 		} catch (UtilException | ValidationException e) {
-			throw new ValidationException("Invalid name");
+			throw new ValidationException(e.getMessage());
 		}
 		if (nameLength < 0 || nameLength > numberOfCharactersForName) {
-			throw new ValidationException("Invalid name");
+			throw new ValidationException("Name length can't be 20");
 		}
 	}
 
@@ -44,11 +44,11 @@ public class UserValidator {
 		try {
 			checkingForNullAndEmpty(pwd);
 		} catch (ValidationException e) {
-			throw new ValidationException("Invalid password");
+			throw new ValidationException(e.getMessage());
 		}
 		boolean validPasswordPattern = Pattern.matches(pattern, pwd);
 		if (!validPasswordPattern) {
-			throw new ValidationException("Invalid password");
+			throw new ValidationException("Invalid password and atleast contain 8 characters");
 		}
 	}
 
@@ -63,7 +63,7 @@ public class UserValidator {
 		try {
 			checkingForNullAndEmpty(email);
 		} catch (ValidationException e) {
-			throw new ValidationException("Invalid email");
+			throw new ValidationException(e.getMessage());
 		}
 		boolean validEmailPattern = Pattern.matches(emailPattern, email);
 		if (!validEmailPattern) {

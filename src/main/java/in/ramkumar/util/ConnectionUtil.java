@@ -27,12 +27,13 @@ public class ConnectionUtil {
 	public static Connection getConnection() {
 		Properties properties = new Properties();
 		try (BufferedReader fileReader = new BufferedReader(
-				new FileReader("src\\main\\java\\in\\ramkumar\\util\\db.properties"))) {
+				new FileReader("C:\\Users\\ramk2646\\askmeapp-ramkumar\\src\\main\\java\\in\\ramkumar\\util\\db.properties"))) {
 			properties.load(fileReader);
 			Class.forName(properties.getProperty("driverClass"));
 			return DriverManager.getConnection(properties.getProperty("url"), properties.getProperty("userName"),
 					properties.getProperty("pwd"));
 		} catch (ClassNotFoundException | SQLException | IOException e) {
+			e.printStackTrace();
 			throw new DBException("Can't establish connection");
 		}
 	}

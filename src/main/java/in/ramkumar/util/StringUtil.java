@@ -20,7 +20,7 @@ public class StringUtil {
 			StringValidator.checkingForNullAndEmpty(string);
 			length = string.trim().length();
 		} catch (ValidationException e) {
-			throw new UtilException("Unable to get length");
+			throw new UtilException(e.getMessage());
 		}
 		return length;
 	}
