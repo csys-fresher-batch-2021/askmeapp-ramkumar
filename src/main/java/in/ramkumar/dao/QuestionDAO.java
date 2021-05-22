@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +31,6 @@ public class QuestionDAO {
 			prepareStatement.setString(2, question.getDescription());
 			prepareStatement.executeUpdate();
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			throw new DBException("Question can't be added to database");
 		} finally {
 			ConnectionUtil.close(prepareStatement, connection);
@@ -62,7 +60,6 @@ public class QuestionDAO {
 				questionList.add(question);
 			}
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			throw new DBException("Can't get questions from database");
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);
@@ -93,7 +90,6 @@ public class QuestionDAO {
 				question = new Question(questionName, description);
 			}
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			throw new DBException("Can't get question from database");
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement,  connection);

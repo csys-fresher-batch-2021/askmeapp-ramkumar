@@ -39,15 +39,14 @@ public class UserValidator {
 	 * 
 	 * @param password
 	 */
-	public static void validatePassword(String password) {
-		String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&-+=()])(?=\\S+$).{8,}$";
+	public static void validatePassword(String pwd) {
+		String pwdPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&])(?=\\S+$).{8,}";
 		try {
-			checkingForNullAndEmpty(password);
+			checkingForNullAndEmpty(pwd);
 		} catch (ValidationException e) {
-			e.printStackTrace();
 			throw new ValidationException("Invalid password");
 		}
-		boolean validPasswordPattern = Pattern.matches(passwordPattern, password);
+		boolean validPasswordPattern = Pattern.matches(pwdPattern, pwd);
 		if (!validPasswordPattern) {
 			throw new ValidationException("Invalid password");
 		}
@@ -60,11 +59,10 @@ public class UserValidator {
 	 * @param email
 	 */
 	public static void validateEmail(String email) {
-		String emailPattern = "[[A-Za-z]?0-9.]+@(?:[a-zA-Z0-9]+\\.)+[a-z]{2,6}$";
+		String emailPattern = "(?:[\\w.]+)@(?:[\\w.]+\\.)[a-z]{2,3}$";
 		try {
 			checkingForNullAndEmpty(email);
 		} catch (ValidationException e) {
-			e.printStackTrace();
 			throw new ValidationException("Invalid email");
 		}
 		boolean validEmailPattern = Pattern.matches(emailPattern, email);

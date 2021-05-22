@@ -29,7 +29,6 @@ public class QuestionValidator {
 		try {
 			questionLength = getLength(question);
 		} catch (UtilException e) {
-			e.printStackTrace();
 			throw new ValidationException(INVALID_QUESTION);
 		}
 		if (questionLength > numberOfCharactersForQuestion && questionLength < 0) {
@@ -51,7 +50,6 @@ public class QuestionValidator {
 		try {
 			descriptionLength = getLength(description);
 		} catch (UtilException e) {
-			e.printStackTrace();
 			throw new ValidationException(INVALID_DESCRIPTION);
 		}
 		if (descriptionLength > numberOfCharactersForDescription && descriptionLength > 0) {

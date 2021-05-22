@@ -2,83 +2,58 @@ package in.ramkumar.service;
 
 import static org.junit.Assert.*;
 
-import java.sql.SQLException;
-
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import in.ramkumar.exception.ServiceException;
 import in.ramkumar.model.Answer;
 import in.ramkumar.model.Question;
 
-public class TestAddAnswerService {
+class TestAddAnswerService {
 
-	/**
-	 * This method adds question.
-	 * 
-	 * @return Returns the added question object.
-	 */
-	public Question addQuestion() {
-		Question question = new Question();
-		question.setQuestionName("What is Java?");
-		question.setDescription("What is meant by Java?");
-		QuestionService questionService = new QuestionService();
-		try {
-			questionService.addQuestion(question);
-		} catch (ServiceException e) {
-			e.printStackTrace();
-			fail();
-		}
-
-		return question;
-	}
 
 	/**
 	 * Testing with valid answer.
 	 */
-	@Test
-	public void testAddAnswer() {
-		Question question = addQuestion();
+	@ParameterizedTest
+	@ValueSource(strings = {"Java is a independent programming language"})
+	void testAddAnswerWithValidInputs(String answers) {
+		Question question = new Question();
+		question.setQuestionName("What is Java?");
+		question.setDescription("What is meant by Java?");
+		QuestionService questionService = new QuestionService();
 		Answer answer = new Answer();
-		answer.setAnswerName("Java is a independent programming language");
+		answer.setAnswerName(answers);
 		AnswerService answerService = new AnswerService();
 		try {
+			questionService.addQuestion(question);
 			answerService.addAnswer(question.getQuestionName(), answer);
 		} catch (ServiceException e) {
 			fail();
-			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Testing with invalid answer(null).
+	 * Testing with invalid answers
 	 */
-	@Test
-	public void testAddAnswerWithNullAnswer() {
-		Question question = addQuestion();
+	@ParameterizedTest
+	@CsvSource({
+		"What is java?, ''", 
+		"What is jsp?, "
+		})
+	void testAddAnswerWithInvalidInputs(String questionString, String answerString) {
+		Question question = new Question();
+		question.setQuestionName(questionString);
+		QuestionService questionService = new QuestionService();
 		Answer answer = new Answer();
-		answer.setAnswerName(null);
+		answer.setAnswerName(answerString);
 		AnswerService answerService = new AnswerService();
 		try {
+			questionService.addQuestion(question);
 			answerService.addAnswer(question.getQuestionName(), answer);
 		} catch (ServiceException e) {
 			assertEquals("Unable to add answer", e.getMessage());
 		}
 	}
-
-	/**
-	 * Testing with invalid answer(empty).
-	 */
-	@Test
-	public void testAddAnswerWithEmptyAnswer() {
-		Question question = addQuestion();
-		Answer answer = new Answer();
-		answer.setAnswerName("");
-		AnswerService answerService = new AnswerService();
-		try {
-			answerService.addAnswer(question.getQuestionName(), answer);
-		} catch (ServiceException e) {
-			assertEquals("Unable to add answer", e.getMessage());
-		}
-	}
-
 }

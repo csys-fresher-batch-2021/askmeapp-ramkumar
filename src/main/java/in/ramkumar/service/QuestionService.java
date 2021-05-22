@@ -31,15 +31,14 @@ public class QuestionService {
 			if (questionObject != null) {
 				throw new ServiceException(UNABLE_TO_ADD_QUESTION);
 			}
-			if (description.length() <= 0) {
-				question.setDescription(null);
-			}
 			if (description != null && !description.equals("")) {
 				QuestionValidator.validateDescription(question);
+				questionDAO.addQuestion(question);
+			} else {
+				question.setDescription(null);
+				questionDAO.addQuestion(question);
 			}
-			questionDAO.addQuestion(question);
 		} catch (DBException | ValidationException | UtilException e) {
-			e.printStackTrace();
 			throw new ServiceException(UNABLE_TO_ADD_QUESTION);
 		}
 	}
@@ -52,7 +51,6 @@ public class QuestionService {
 		try {
 			questionsList = questionDAO.getAllQuestions();
 		} catch (DBException e) {
-			e.printStackTrace();
 			throw new ServiceException("Unable to get questions");
 		}
 		return questionsList;
@@ -61,11 +59,10 @@ public class QuestionService {
 	/**
 	 * @return Returns number of questions in the question list.
 	 */
-	public int getNumberOfQuestion(){
+	public int getNumberOfQuestion() {
 		try {
 			return getAllQuestions().size();
 		} catch (ServiceException e) {
-			e.printStackTrace();
 			throw new ServiceException("Unable to get number of questions");
 		}
 	}
@@ -80,7 +77,6 @@ public class QuestionService {
 			StringValidator.checkingForNullAndEmpty(questionName);
 			question = questionDAO.getQuestion(questionName);
 		} catch (ValidationException | DBException e) {
-			e.printStackTrace();
 			throw new ServiceException("Unable to get question");
 		}
 		return question;

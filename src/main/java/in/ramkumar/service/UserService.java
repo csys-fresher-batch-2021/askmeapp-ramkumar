@@ -34,7 +34,6 @@ public class UserService {
 				throw new ServiceException(UNABLE_TO_REGISTER_USER);
 			}
 		} catch (ServiceException e) {
-			e.printStackTrace();
 			throw new ServiceException(UNABLE_TO_REGISTER_USER);
 		}
 
@@ -62,7 +61,7 @@ public class UserService {
 		try {
 			allUsers = userDAO.getAllUsers();
 		} catch (DBException e) {
-			e.printStackTrace();
+			throw new ServiceException("Unable to all users");
 		}
 		return allUsers;
 	}
@@ -76,7 +75,6 @@ public class UserService {
 		try {
 			size = getAllUsers().size();
 		} catch (ServiceException e) {
-			e.printStackTrace();
 			throw new ServiceException("Unable to get number of users");
 		}
 		return size;
@@ -92,7 +90,6 @@ public class UserService {
 			StringValidator.checkingForNullAndEmpty(email);
 			user = userDAO.getUser(email);
 		} catch (ValidationException | DBException e) {
-			e.printStackTrace();
 			throw new ServiceException("Unable to get user");
 		}
 		return user;

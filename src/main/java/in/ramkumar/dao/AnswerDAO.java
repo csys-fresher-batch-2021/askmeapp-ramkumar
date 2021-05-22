@@ -31,7 +31,6 @@ public class AnswerDAO {
 			prepareStatement.setString(2, answerObject.getAnswerName());
 			prepareStatement.executeUpdate();
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			throw new DBException("Answer can't be added to database");
 		} finally {
 			ConnectionUtil.close(prepareStatement, connection);
@@ -63,7 +62,6 @@ public class AnswerDAO {
 				answerList.add(answer);
 			}
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			throw new DBException("Can't get answers from database");
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);

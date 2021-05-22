@@ -1,10 +1,14 @@
 package in.ramkumar.util;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 import in.ramkumar.exception.DBException;
 
@@ -21,14 +25,14 @@ public class ConnectionUtil {
 	 * @return Connection instance
 	 */
 	public static Connection getConnection() {
-		String driverClass = "org.postgresql.Driver";
-		String url = "jdbc:postgresql://localhost/askme_db";
-		String userName = "postgres";
-		String password = "2004@cse";
-		try {
-			Class.forName(driverClass);
-			return DriverManager.getConnection(url, userName, password);
-		} catch (ClassNotFoundException | SQLException e) {
+		Properties properties = new Properties();
+		try (BufferedReader fileReader = new BufferedReader(
+				new FileReader("src\\main\\java\\in\\ramkumar\\util\\db.properties"))) {
+			properties.load(fileReader);
+			Class.forName(properties.getProperty("driverClass"));
+			return DriverManager.getConnection(properties.getProperty("url"), properties.getProperty("userName"),
+					properties.getProperty("pwd"));
+		} catch (ClassNotFoundException | SQLException | IOException e) {
 			throw new DBException("Can't establish connection");
 		}
 	}

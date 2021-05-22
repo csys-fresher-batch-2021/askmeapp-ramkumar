@@ -28,7 +28,6 @@ public class AnswerService {
 				answerDAO.addAnswer(questionName, answerObject);
 			}
 		} catch (DBException | UtilException e) {
-			e.printStackTrace();
 			throw new ServiceException("Unable to add answer");
 		}
 	}
@@ -43,7 +42,6 @@ public class AnswerService {
 			StringValidator.checkingForNullAndEmpty(questionName);
 			 answerList = answerDAO.getAllAnswers(questionName);
 		} catch (ValidationException | DBException e) {
-			e.printStackTrace();
 			throw new ServiceException("Unable to get anwers");
 		}
 		return answerList;

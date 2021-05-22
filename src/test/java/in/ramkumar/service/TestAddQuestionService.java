@@ -2,14 +2,14 @@ package in.ramkumar.service;
 
 import static org.junit.Assert.*;
 
-import java.sql.SQLException;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import in.ramkumar.exception.ServiceException;
 import in.ramkumar.model.Question;
 
-public class TestAddQuestionService {
+class TestAddQuestionService {
 
 	private String validQuestion = "What is Java?";
 	private String validDescription = "Help me to answer for this to talk about it in interview";
@@ -31,11 +31,14 @@ public class TestAddQuestionService {
 	/**
 	 * Validation with valid question and valid description.
 	 */
-	@Test
-	public void testAddQuestionWithValidQuestionAndDescription() {
+	@ParameterizedTest
+	@CsvSource({
+		"What is Java?, Help me to answer for this to talk about it in interview"
+	})
+	void testAddQuestionWithValidInputs(String questionString, String desString) {
 		Question question = new Question();
-		question.setQuestionName(validQuestion);
-		question.setDescription(validDescription);
+		question.setQuestionName(questionString);
+		question.setDescription(desString);
 		QuestionService questionService = new QuestionService();
 		try {
 			questionService.addQuestion(question);
@@ -47,62 +50,15 @@ public class TestAddQuestionService {
 	/**
 	 * Validation with valid question and null description.
 	 */
-	@Test
-	public void testAddQuestionWithValidQuestionAndNullDescription() {
+	@ParameterizedTest
+	@CsvSource({
+		", What is meant by Java?",
+		"'', ''"
+		})
+	void testAddQuestionWithInValidInputs(String questioString, String answerString) {
 		Question question = new Question();
-		question.setQuestionName(validQuestion);
-		question.setDescription(null);
-		QuestionService questionService = new QuestionService();
-		try {
-			questionService.addQuestion(question);
-		} catch (ServiceException e) {
-			String message = e.getMessage();
-			assertEquals("Unable to add question", message);
-		}
-	}
-
-	/**
-	 * Validation with null question and valid description.
-	 */
-	@Test
-	public void testAddQuestionWithNullQuestionAndValidDescription() {
-		Question question = new Question();
-		question.setQuestionName(null);
-		question.setDescription(validDescription);
-		QuestionService questionService = new QuestionService();
-		try {
-			questionService.addQuestion(question);
-		} catch (ServiceException e) {
-			String message = e.getMessage();
-			assertEquals("Unable to add question", message);
-		}
-	}
-
-	/**
-	 * Validation with null question and null description.
-	 */
-	@Test
-	public void testAddQuestionWithNullQuestionAndNullDescription() {
-		Question question = new Question();
-		question.setQuestionName(null);
-		question.setDescription(null);
-		QuestionService questionService = new QuestionService();
-		try {
-			questionService.addQuestion(question);
-		} catch (ServiceException e) {
-			String message = e.getMessage();
-			assertEquals("Unable to add question", message);
-		}
-	}
-
-	/**
-	 * Validation with empty question and empty description.
-	 */
-	@Test
-	public void testAddQuestionWithEmptyQuestionAndEmptyDescription() {
-		Question question = new Question();
-		question.setQuestionName("");
-		question.setDescription("");
+		question.setQuestionName(questioString);
+		question.setDescription(answerString);
 		QuestionService questionService = new QuestionService();
 		try {
 			questionService.addQuestion(question);
@@ -116,10 +72,10 @@ public class TestAddQuestionService {
 	 * Validation of question with >300 letters and description with >600 letters
 	 */
 	@Test
-	public void testAddQuestionWithGreaterThan300() {
+	void testAddQuestionWithGreaterThan300() {
 		Question question = new Question();
 		question.setQuestionName(questionWithGreaterThan300Letters);
-		question.setDescription(validQuestion);
+		question.setDescription(validDescription);
 		QuestionService questionService = new QuestionService();
 		try {
 			questionService.addQuestion(question);
@@ -133,7 +89,7 @@ public class TestAddQuestionService {
 	 * Validation of question with description with >600 letters
 	 */
 	@Test
-	public void testAddDescriptionWithGreaterThan600Letters() {
+	void testAddDescriptionWithGreaterThan600Letters() {
 		Question question = new Question();
 		question.setQuestionName(validQuestion);
 		question.setDescription(descriptionWithGreaterThan600Letters);
@@ -145,5 +101,4 @@ public class TestAddQuestionService {
 			assertEquals("Unable to add question", message);
 		}
 	}
-
 }
