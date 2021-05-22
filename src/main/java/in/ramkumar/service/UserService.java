@@ -47,7 +47,6 @@ public class UserService {
 				validateEmail(email);
 				userDAO.addUser(userObject);
 		} catch (ValidationException | DBException e) {
-			e.printStackTrace();
 			throw new ServiceException(UNABLE_TO_REGISTER_USER);
 		}
 		return user == null;

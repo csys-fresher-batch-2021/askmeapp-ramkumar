@@ -40,13 +40,13 @@ public class UserValidator {
 	 * @param password
 	 */
 	public static void validatePassword(String pwd) {
-		String pwdPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&])(?=\\S+$).{8,}";
+		String pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&])(?=\\S+$).{8,}";
 		try {
 			checkingForNullAndEmpty(pwd);
 		} catch (ValidationException e) {
 			throw new ValidationException("Invalid password");
 		}
-		boolean validPasswordPattern = Pattern.matches(pwdPattern, pwd);
+		boolean validPasswordPattern = Pattern.matches(pattern, pwd);
 		if (!validPasswordPattern) {
 			throw new ValidationException("Invalid password");
 		}
