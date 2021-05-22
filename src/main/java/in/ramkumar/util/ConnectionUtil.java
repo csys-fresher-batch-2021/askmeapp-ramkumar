@@ -33,7 +33,6 @@ public class ConnectionUtil {
 			return DriverManager.getConnection(properties.getProperty("url"), properties.getProperty("userName"),
 					properties.getProperty("pwd"));
 		} catch (ClassNotFoundException | SQLException | IOException e) {
-			e.printStackTrace();
 			throw new DBException("Can't establish connection");
 		}
 	}
