@@ -52,10 +52,10 @@ class TestAddQuestionService {
 	 */
 	@ParameterizedTest
 	@CsvSource({
-		", What is meant by Java?",
-		"'', ''"
+		", What is meant by Java?, Null value not accepted",
+		"'', '', Empty value not accepted"
 		})
-	void testAddQuestionWithInValidInputs(String questioString, String answerString) {
+	void testAddQuestionWithInValidInputs(String questioString, String answerString, String message) {
 		Question question = new Question();
 		question.setQuestionName(questioString);
 		question.setDescription(answerString);
@@ -63,8 +63,7 @@ class TestAddQuestionService {
 		try {
 			questionService.addQuestion(question);
 		} catch (ServiceException e) {
-			String message = e.getMessage();
-			assertEquals("Unable to add question", message);
+			assertEquals(message, e.getMessage());
 		}
 	}
 
@@ -81,7 +80,7 @@ class TestAddQuestionService {
 			questionService.addQuestion(question);
 		} catch (ServiceException e) {
 			String message = e.getMessage();
-			assertEquals("Unable to add question", message);
+			assertEquals("Questoin length can't be 300", message);
 		}
 	}
 
@@ -98,7 +97,7 @@ class TestAddQuestionService {
 			questionService.addQuestion(question);
 		} catch (ServiceException e) {
 			String message = e.getMessage();
-			assertEquals("Unable to add question", message);
+			assertEquals("Description length can't be 600", message);
 		}
 	}
 }

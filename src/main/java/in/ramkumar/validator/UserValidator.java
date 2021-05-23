@@ -48,7 +48,7 @@ public class UserValidator {
 		}
 		boolean validPasswordPattern = Pattern.matches(pattern, pwd);
 		if (!validPasswordPattern) {
-			throw new ValidationException("Invalid password and atleast contain 8 characters");
+			throw new ValidationException("Invalid password. Use 8 or more characters with a mix of letters(upper and lower and symbols) and numbers");
 		}
 	}
 

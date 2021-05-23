@@ -39,10 +39,10 @@ class TestAddAnswerService {
 	 */
 	@ParameterizedTest
 	@CsvSource({
-		"What is java?, ''", 
-		"What is jsp?, "
+		"What is java?, '', Empty value not accepted", 
+		"What is jsp?, , Null value not accepted"
 		})
-	void testAddAnswerWithInvalidInputs(String questionString, String answerString) {
+	void testAddAnswerWithInvalidInputs(String questionString, String answerString, String message) {
 		Question question = new Question();
 		question.setQuestionName(questionString);
 		QuestionService questionService = new QuestionService();
@@ -53,7 +53,7 @@ class TestAddAnswerService {
 			questionService.addQuestion(question);
 			answerService.addAnswer(question.getQuestionName(), answer);
 		} catch (ServiceException e) {
-			assertEquals("Unable to add answer", e.getMessage());
+			assertEquals(message, e.getMessage());
 		}
 	}
 }

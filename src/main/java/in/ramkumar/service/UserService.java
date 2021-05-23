@@ -31,7 +31,7 @@ public class UserService {
 		try {
 			user = getUser(email); // Checking user already exists in the users database.
 			if (user != null) {
-				throw new ServiceException("Sorry, Email already exists");
+				throw new ServiceException("Sorry Email already exists");
 			}
 		} catch (ServiceException e) {
 			throw new ServiceException(e.getMessage());
@@ -43,8 +43,8 @@ public class UserService {
 		 */
 		try {
 			validateName(name);
-			validatePassword(password);
 			validateEmail(email);
+			validatePassword(password);
 			userDAO.addUser(userObject);
 		} catch (ValidationException e) {
 			throw new ServiceException(e.getMessage());
@@ -90,8 +90,10 @@ public class UserService {
 		try {
 			StringValidator.checkingForNullAndEmpty(email);
 			user = userDAO.getUser(email);
-		} catch (ValidationException | DBException e) {
+		} catch (DBException e) {
 			throw new ServiceException("Unable to get user");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
 		}
 		return user;
 	}

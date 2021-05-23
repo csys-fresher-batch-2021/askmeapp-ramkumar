@@ -28,7 +28,7 @@ public class QuestionValidator {
 		} catch (UtilException e) {
 			throw new ValidationException(e.getMessage());
 		}
-		if (questionLength > numberOfCharactersForQuestion && questionLength < 0) {
+		if (questionLength > numberOfCharactersForQuestion && questionLength > 0) {
 			throw new ValidationException("Questoin length can't be 300");
 		}
 	}
