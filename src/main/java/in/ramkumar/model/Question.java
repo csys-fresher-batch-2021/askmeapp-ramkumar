@@ -1,27 +1,18 @@
 package in.ramkumar.model;
 
-import java.util.List;
-
 public class Question {
 
 	private String questionName;
 	private String description;
-	private List<Answer> answerList;
-
-	/**
-	 * @return Returns the answerList.
-	 */
-	public List<Answer> getAnswerList() {
-		return answerList;
+	
+	public Question() {
+		
 	}
 
-	/**
-	 * This method sets the answerList.
-	 * 
-	 * @param answerList
-	 */
-	public void setAnswerList(List<Answer> answerList) {
-		this.answerList = answerList;
+	public Question(String questionName, String description) {
+		super();
+		this.questionName = questionName;
+		this.description = description;
 	}
 
 	/**
@@ -61,11 +52,13 @@ public class Question {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
+	
+	/**
+	 * Returns the string representation of Question object.
+	 */
 	@Override
 	public String toString() {
-		return "Question [questionName=" + questionName + ", description=" + description + ", answerList=" + answerList
-				+ "]";
+		return "Question [questionName=" + questionName + ", description=" + description + "]";
 	}
 
 }

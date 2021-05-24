@@ -1,5 +1,7 @@
 package in.ramkumar.validator;
 
+import in.ramkumar.exception.ValidationException;
+
 public class StringValidator {
 	
 	private StringValidator() {
@@ -10,12 +12,13 @@ public class StringValidator {
 	 * This method checks the given string with null and empty.
 	 * 
 	 * @param string
+	 * @return Returns true iff the given string is not null and empty.
 	 */
 	public static void checkingForNullAndEmpty(String string) {
 		if (string == null) {
-			throw new IllegalArgumentException("Null value not accepted");
+			throw new ValidationException("Null value not accepted");
 		}else if(string.trim().equals("")) {
-			throw new IllegalArgumentException("Empty value not accepted");
+			throw new ValidationException("Empty value not accepted");
 		}
 	}
 

@@ -2,7 +2,9 @@ package in.ramkumar.validator;
 
 import in.ramkumar.model.Question;
 import static in.ramkumar.util.StringUtil.*;
-import static in.ramkumar.validator.StringValidator.*;
+
+import in.ramkumar.exception.UtilException;
+import in.ramkumar.exception.ValidationException;
 
 public class QuestionValidator {
 
@@ -20,9 +22,14 @@ public class QuestionValidator {
 	public static void validateQuestion(Question questionObject) {
 		String question = questionObject.getQuestionName();
 		Integer numberOfCharactersForQuestion = 300;
-		int questionLength = getLength(question);
-		if (questionLength < 0 || questionLength > numberOfCharactersForQuestion) {
-			throw new IllegalArgumentException("Invalid Question");
+		int questionLength;
+		try {
+			questionLength = getLength(question);
+		} catch (UtilException e) {
+			throw new ValidationException(e.getMessage());
+		}
+		if (questionLength > numberOfCharactersForQuestion && questionLength > 0) {
+			throw new ValidationException("Questoin length can't be 300");
 		}
 	}
 
@@ -33,12 +40,17 @@ public class QuestionValidator {
 	 * 
 	 * @param questionObject
 	 */
-	public static void validateDescription(Question questionObject) {
+	public static void validateDescription(Question questionObject){
 		String description = questionObject.getDescription();
 		Integer numberOfCharactersForDescription = 600;
-		int descriptionLength = getLength(description);
-		if (descriptionLength < 0 || descriptionLength > numberOfCharactersForDescription) {
-			throw new IllegalArgumentException("Invalid Description");
+		int descriptionLength;
+		try {
+			descriptionLength = getLength(description);
+		} catch (UtilException e) {
+			throw new ValidationException(e.getMessage());
+		}
+		if (descriptionLength > numberOfCharactersForDescription && descriptionLength > 0) {
+			throw new ValidationException("Description length can't be 600");
 		}
 	}
 
