@@ -145,13 +145,13 @@ public class UserService {
 	 * @return Returns true if the user email and password given by the admin is
 	 *         valid.
 	 */
-	public boolean adminLogin(String email, String password) {
+	public boolean adminLogin(String email, String pass) {
 		checkingForNullAndEmpty(email);
-		checkingForNullAndEmpty(password);
+		checkingForNullAndEmpty(pass);
 
 		boolean validAdmin = false;
 
-		if (email.equals("admin@gmail.com") && password.equals("admin")) {
+		if (email.equals("admin@gmail.com") && pass.equals("admin")) {
 			validAdmin = true;
 		} else {
 			throw new ServiceException("Invalid admin");

@@ -32,7 +32,6 @@ public class UserDAO {
 			prepareStatement.setString(3, user.getPassword());
 			prepareStatement.executeUpdate();
 		} catch (SQLException | DBException e) {
-			e.printStackTrace();
 			throw new DBException("Can't add user to the database");
 		} finally {
 			ConnectionUtil.close(prepareStatement, connection);
