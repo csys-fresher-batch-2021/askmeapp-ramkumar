@@ -15,10 +15,11 @@
 		<jsp:include page="message.jsp"></jsp:include>
 		<div class="table-responsive">
 		<table class="table table-bordered table-hover">
+			<caption>List of Topics</caption>
 			<thead class="thead-light">
-				<th>Topic Id</th>
-				<th>Topic</th>
-				<th>Action</th>
+				<th scope="col">Topic Id</th>
+				<th scope="col">Topic</th>
+				<th scope="col">Action</th>
 			</thead>
 			<tbody id="topicList">
 

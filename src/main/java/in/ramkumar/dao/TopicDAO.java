@@ -27,7 +27,6 @@ public class TopicDAO {
 			prepareStatement.setString(1, topic.getTopicName());
 			prepareStatement.executeUpdate();
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			throw new DBException("Can't add topic to database");
 		}
 		finally {
@@ -59,7 +58,6 @@ public class TopicDAO {
 				topicList.add(topic);
 			}
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			throw new DBException("Can't get topics from database");
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);
@@ -89,7 +87,6 @@ public class TopicDAO {
 				topic = new Topic(topicId, topicName);
 			}
 		} catch (SQLException | DBException e) {
-			e.printStackTrace();
 			throw new DBException("Can't get topic from database");
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);
@@ -119,7 +116,6 @@ public class TopicDAO {
 				topic = new Topic(topicId, topicName);
 			}
 		} catch (SQLException | DBException e) {
-			e.printStackTrace();
 			throw new DBException("Can't get topic from database");
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);
@@ -147,7 +143,6 @@ public class TopicDAO {
 			prepareStatement.setInt(2, topicId);
 			prepareStatement.executeUpdate();
 		} catch (SQLException | DBException e) {
-			e.printStackTrace();
 			throw new DBException("Can't update topic in database");
 		} finally {
 			ConnectionUtil.close(prepareStatement, connection);

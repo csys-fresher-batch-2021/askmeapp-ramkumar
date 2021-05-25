@@ -59,10 +59,8 @@ public class TopicService {
 			StringValidator.checkingForNullAndEmpty(topicName);
 			topic = topicDAO.getTopicByName(topicName);
 		} catch (ValidationException e) {
-			e.printStackTrace();
 			throw new ServiceException(e.getMessage());
 		}catch (DBException e) {
-			e.printStackTrace();
 			throw new ServiceException("Unable to get topic");
 		}
 		return topic;
