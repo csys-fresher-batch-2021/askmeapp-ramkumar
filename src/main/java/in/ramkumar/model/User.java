@@ -2,17 +2,40 @@ package in.ramkumar.model;
 
 public class User {
 
+	private Integer userId;
 	private String name;
 	private String email;
 	private String password;
-	
+
 	public User() {
+	}
+
+	public User(Integer userId, String name, String email, String password) {
+		this.userId = userId;
+		this.name = name;
+		this.email = email;
+		this.password = password;
 	}
 
 	public User(String name, String email, String password) {
 		this.name = name;
 		this.email = email;
 		this.password = password;
+	}
+
+	/**
+	 * @return Returns the userId
+	 */
+	public Integer getUserId() {
+		return userId;
+	}
+
+	/**
+	 * This method sets the userId.
+	 * @param userId
+	 */
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	/**
@@ -63,12 +86,9 @@ public class User {
 		this.password = password;
 	}
 
-	/**
-	 * @return Returns the string representation of User object.
-	 */
 	@Override
 	public String toString() {
-		return "User [name=" + name + ", email=" + email + ", password=" + password + "]";
+		return "User [userId=" + userId + ", name=" + name + ", email=" + email + ", password=" + password + "]";
 	}
 
 }

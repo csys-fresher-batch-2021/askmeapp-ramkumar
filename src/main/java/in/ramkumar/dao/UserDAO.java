@@ -19,7 +19,7 @@ public class UserDAO {
 	 * @param user
 	 */
 	public void addUser(User user) {
-		String insertSQLQuery = "INSERT INTO Users (name, email, password) VALUES (?, ?, ?)";
+		String insertSQLQuery = "INSERT INTO Users (user_name, user_email, user_password) VALUES (?, ?, ?)";
 
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
@@ -56,10 +56,11 @@ public class UserDAO {
 			prepareStatement = connection.prepareStatement(selectSQLQuery);
 			resultSet = prepareStatement.executeQuery();
 			while (resultSet.next()) {
-				String name = resultSet.getString("name");
-				String email = resultSet.getString("email");
-				String password = resultSet.getString("password");
-				User user = new User(name, email, password);
+				Integer userId = resultSet.getInt("user_id");
+				String name = resultSet.getString("user_name");
+				String email = resultSet.getString("user_email");
+				String password = resultSet.getString("user_password");
+				User user = new User(userId, name, email, password);
 				userList.add(user);
 			}
 		} catch (SQLException | DBException e) {
@@ -75,8 +76,8 @@ public class UserDAO {
 	 * @param email
 	 * @return Returns the User object for the given email.
 	 */
-	public User getUser(String emailString) {
-		String selectSQLQuery = "SELECT * FROM Users WHERE email = ?";
+	public User getUserByEmail(String emailString) {
+		String selectSQLQuery = "SELECT * FROM Users WHERE user_email = ?";
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
@@ -88,10 +89,11 @@ public class UserDAO {
 			prepareStatement.setString(1, emailString);
 			resultSet = prepareStatement.executeQuery();
 			if (resultSet.next()) {
-				String name = resultSet.getString("name");
-				String email = resultSet.getString("email");
-				String password = resultSet.getString("password");
-				user = new User(name, email, password);
+				Integer userId = resultSet.getInt("user_id");
+				String name = resultSet.getString("user_name");
+				String email = resultSet.getString("user_email");
+				String password = resultSet.getString("user_password");
+				user = new User(userId, name, email, password);
 			}
 		} catch (SQLException | DBException e) {
 			throw new DBException("Can't get user from database");

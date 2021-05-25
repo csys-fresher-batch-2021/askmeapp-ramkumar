@@ -9,6 +9,7 @@ import in.ramkumar.exception.ValidationException;
 import in.ramkumar.model.User;
 import in.ramkumar.validator.StringValidator;
 
+import static in.ramkumar.validator.StringValidator.checkingForNullAndEmpty;
 import static in.ramkumar.validator.UserValidator.*;
 
 public class UserService {
@@ -89,7 +90,7 @@ public class UserService {
 		User user = null;
 		try {
 			StringValidator.checkingForNullAndEmpty(email);
-			user = userDAO.getUser(email);
+			user = userDAO.getUserByEmail(email);
 		} catch (DBException e) {
 			throw new ServiceException("Unable to get user");
 		} catch (ValidationException e) {
@@ -97,4 +98,65 @@ public class UserService {
 		}
 		return user;
 	}
+
+	/**
+	 * User Login. This method checks the user exist in the userList. If the user
+	 * exist, user object index will be return by getUserIndexWithEmail(email). With
+	 * user index we can get the user object reference. And then email and password
+	 * is verified.
+	 * 
+	 * @param email
+	 * @return Returns true if the user email and password given by the user is
+	 *         verified with user object and it should match with user
+	 */
+	public boolean login(String email, String password) {
+
+		boolean validUser = false;
+		User user = null;
+		try {
+			checkingForNullAndEmpty(email);
+			checkingForNullAndEmpty(password);
+			user = getUser(email); // Checking user already exists in the users database.
+		} catch (ValidationException | ServiceException e) {
+			throw new ServiceException(e.getMessage());
+		}
+
+		if (user == null) {
+			throw new ServiceException("No user with email " + email);
+		}
+		/*
+		 * If the user email, password is not null and empty, then get the user index
+		 * from the userList.
+		 */
+		if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
+			validUser = true;
+		} else {
+			throw new ServiceException("Incorrect email or password");
+		}
+		return validUser;
+	}
+
+	/**
+	 * Admin Login. This methods checks the email is 'admin@gmail.com' and password
+	 * is 'admin'
+	 * 
+	 * @param email
+	 * @param password
+	 * @return Returns true if the user email and password given by the admin is
+	 *         valid.
+	 */
+	public boolean adminLogin(String email, String pass) {
+		checkingForNullAndEmpty(email);
+		checkingForNullAndEmpty(pass);
+
+		boolean validAdmin = false;
+
+		if (email.equals("admin@gmail.com") && pass.equals("admin")) {
+			validAdmin = true;
+		} else {
+			throw new ServiceException("Invalid admin");
+		}
+		return validAdmin;
+	}
+
 }
