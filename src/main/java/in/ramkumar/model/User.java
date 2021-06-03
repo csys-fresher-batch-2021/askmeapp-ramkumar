@@ -24,14 +24,16 @@ public class User {
 	}
 
 	/**
-	 * @return Returns the userId
+	 * 
+	 * @return userId
 	 */
 	public Integer getUserId() {
 		return userId;
 	}
 
 	/**
-	 * This method sets the userId.
+	 * Sets the userId
+	 * 
 	 * @param userId
 	 */
 	public void setUserId(Integer userId) {
@@ -86,6 +88,9 @@ public class User {
 		this.password = password;
 	}
 
+	/**
+	 * Returns the string representation of for the User object.
+	 */
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", name=" + name + ", email=" + email + ", password=" + password + "]";

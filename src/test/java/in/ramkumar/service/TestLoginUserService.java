@@ -20,7 +20,7 @@ class TestLoginUserService {
 			boolean validUser = userService.login("dhaya@mail.com", "Pass@1234");
 			assertTrue(validUser);
 		} catch (ServiceException e1) {
-			e1.printStackTrace();
+			fail();
 		}
 	}
 
@@ -39,7 +39,6 @@ class TestLoginUserService {
 		try {
 			userService.login(email, password);
 		} catch (ServiceException e) {
-			e.printStackTrace();
 			assertEquals(message, e.getMessage());
 		}
 	}

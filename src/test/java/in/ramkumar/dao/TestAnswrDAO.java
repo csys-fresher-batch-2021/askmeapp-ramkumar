@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import in.ramkumar.exception.DBException;
 import in.ramkumar.model.Answer;
-import in.ramkumar.model.Question;
 
 public class TestAnswrDAO {
 
@@ -19,12 +18,10 @@ public class TestAnswrDAO {
 			Answer answer = new Answer();
 			answer.setAnswerName("Javascript is a scripting language");
 			AnswerDAO answerDAO = new AnswerDAO();
-			answerDAO.addAnswer("What is Javacript?", answer);
+			answerDAO.addAnswer(Integer.valueOf(1), Integer.valueOf(1), answer);
 		} catch (DBException e) {
-			e.printStackTrace();
 			fail("Not yet implemented");
 		}
-
 	}
 
 }

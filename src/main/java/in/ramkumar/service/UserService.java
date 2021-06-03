@@ -7,13 +7,15 @@ import in.ramkumar.exception.DBException;
 import in.ramkumar.exception.ServiceException;
 import in.ramkumar.exception.ValidationException;
 import in.ramkumar.model.User;
+import in.ramkumar.validator.NumberValidator;
 import in.ramkumar.validator.StringValidator;
 
-import static in.ramkumar.validator.StringValidator.checkingForNullAndEmpty;
+import static in.ramkumar.validator.StringValidator.*;
 import static in.ramkumar.validator.UserValidator.*;
 
 public class UserService {
 
+	private static final String INVALID_ADMIN = "Invalid admin";
 	private static final String UNABLE_TO_REGISTER_USER = "Unable to register user";
 	private UserDAO userDAO = new UserDAO();
 
@@ -30,7 +32,7 @@ public class UserService {
 
 		User user = null;
 		try {
-			user = getUser(email); // Checking user already exists in the users database.
+			user = getUserByEmail(email); // Checking user already exists in the users database.
 			if (user != null) {
 				throw new ServiceException("Sorry Email already exists");
 			}
@@ -63,7 +65,7 @@ public class UserService {
 		try {
 			allUsers = userDAO.getAllUsers();
 		} catch (DBException e) {
-			throw new ServiceException("Unable to all users");
+			throw new ServiceException("Unable to get all users");
 		}
 		return allUsers;
 	}
@@ -86,11 +88,28 @@ public class UserService {
 	 * @param email
 	 * @return Returns the User object for the given email.
 	 */
-	public User getUser(String email) {
+	public User getUserByEmail(String email) {
 		User user = null;
 		try {
 			StringValidator.checkingForNullAndEmpty(email);
-			user = userDAO.getUserByEmail(email);
+			user = userDAO.getUserByEmail(email.toLowerCase());
+		} catch (DBException e) {
+			throw new ServiceException("Unable to get user");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		}
+		return user;
+	}
+
+	/**
+	 * @param userId
+	 * @return Returns the User object for the given userId.
+	 */
+	public User getUserById(Integer userId) {
+		User user = null;
+		try {
+			NumberValidator.checkingForNullAndEmpty(userId);
+			user = userDAO.getUserById(userId);
 		} catch (DBException e) {
 			throw new ServiceException("Unable to get user");
 		} catch (ValidationException e) {
@@ -116,7 +135,7 @@ public class UserService {
 		try {
 			checkingForNullAndEmpty(email);
 			checkingForNullAndEmpty(password);
-			user = getUser(email); // Checking user already exists in the users database.
+			user = getUserByEmail(email); // Checking user already exists in the users database.
 		} catch (ValidationException | ServiceException e) {
 			throw new ServiceException(e.getMessage());
 		}
@@ -128,7 +147,7 @@ public class UserService {
 		 * If the user email, password is not null and empty, then get the user index
 		 * from the userList.
 		 */
-		if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
+		if (user.getEmail().equals(email.toLowerCase()) && user.getPassword().equals(password)) {
 			validUser = true;
 		} else {
 			throw new ServiceException("Incorrect email or password");
@@ -145,18 +164,97 @@ public class UserService {
 	 * @return Returns true if the user email and password given by the admin is
 	 *         valid.
 	 */
-	public boolean adminLogin(String email, String pass) {
+	public boolean adminLogin(String email, String password) {
 		checkingForNullAndEmpty(email);
-		checkingForNullAndEmpty(pass);
+		checkingForNullAndEmpty(password);
 
 		boolean validAdmin = false;
 
-		if (email.equals("admin@gmail.com") && pass.equals("admin")) {
+		if (email.equals("admin@gmail.com") && password.equals("admin")) {
 			validAdmin = true;
 		} else {
-			throw new ServiceException("Invalid admin");
+			throw new ServiceException(INVALID_ADMIN);
 		}
 		return validAdmin;
+	}
+
+	/**
+	 * Update UserName. This method validates the given new user name. If it is a
+	 * valid user name then only it will change their new user name.
+	 * 
+	 * @param userId
+	 * @param newUserName
+	 * @return Returns true if the user name is successfully changed to new user
+	 *         name.
+	 */
+	public boolean changeUserName(Integer userId, String newUserName) {
+		User user = null;
+		try {
+			validateName(newUserName);
+			NumberValidator.checkingForNullAndEmpty(userId);
+			user = getUserById(userId); // Checking user already exists in the users database.
+			if (user != null) {
+				userDAO.updateUserName(userId, newUserName);
+			}
+		} catch (ServiceException | ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		} catch (DBException e) {
+			throw new ServiceException("Unable to change user name");
+		}
+		return user != null;
+	}
+
+	/**
+	 * Update Password. This method validates the given new user password. If it is
+	 * a valid password then only it will update their new password.
+	 * 
+	 * @param userId
+	 * @param newPassword
+	 * @return Returns true if the user password is successfully changed to new
+	 *         password.
+	 */
+	public boolean changePassword(Integer userId, String newPassword) {
+		User user = null;
+		try {
+			StringValidator.checkingForNullAndEmpty(newPassword);
+			validatePassword(newPassword);
+			user = getUserById(userId); // Checking user already exists in the users database.
+			if (user != null) {
+				userDAO.updateUserPassword(userId, newPassword);
+			}
+		} catch (ServiceException | ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		} catch (DBException e) {
+			throw new ServiceException("Unable to change password");
+		}
+		return user != null;
+	}
+
+	/**
+	 * Update Email. This method validates the given new user email. If it is a
+	 * valid email then only it will update their new email.
+	 * 
+	 * @param userId
+	 * @param newEmail
+	 * @return Returns true if the user newEmail is successfully changed to new
+	 *         email.
+	 */
+	public boolean changeEmail(Integer userId, String newEmail) {
+		User user = null;
+		try {
+			StringValidator.checkingForNullAndEmpty(newEmail);
+			validateEmail(newEmail);
+			user = getUserById(userId); // Checking user already exists in the users database.
+
+			if (user != null) {
+				userDAO.updateUserEmail(userId, newEmail);
+			}
+		} catch (ServiceException | ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		} catch (DBException e) {
+			throw new ServiceException("Unable to change email");
+		}
+		return user != null;
 	}
 
 }

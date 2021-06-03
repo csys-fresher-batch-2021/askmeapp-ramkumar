@@ -18,77 +18,85 @@ String role = (String) session.getAttribute("Logged_In_UserRole");
 %>
 
 <header>
-	<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+	<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
 		<%
 		if (role != null && role.equals("Admin")) {
 		%>
-		<a class="navbar-brand"
-			href="topic_list.jsp">AskMe Admin</a>
+		<a class="navbar-brand" href="topic_list.jsp">AskMe Admin</a>
 		<%
-		}else{
+		} else {
 		%>
-		<a class="navbar-brand" href="index.jsp">AskMe</a><%} %>
-		<button class="navbar-toggler d-lg-none" type="button"
-			data-toggle="collapse" data-target="#collapsibleNavId"
-			aria-controls="collapsibleNavId" aria-expanded="false"
-			aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="collapsibleNavId">
-			<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="index.jsp">AskMe</a>
+			<%
+			}
+			%>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mb-2 mb-lg-0">
+					<%
+					if (role != null && role.equals("Admin")) {
+					%>
+					<li class="nav-item"><a class="nav-link active"
+						href="topic_list.jsp">Home</a></li>
+					<%
+					} else {
+					%>
+					<li class="nav-item"><a class="nav-link active"
+						href="index.jsp">Home</a></li>
+					<%
+					}
+					%>
+					<%
+					if (userName == null && role == null) {
+					%>
+					<li class="nav-item"><a class="nav-link active"
+						href="login.jsp">Login</a></li>
+					<li class="nav-item"><a class="nav-link active"
+						href="registration.jsp">Register</a></li>
+					<%
+					} else if (userName != null && role.equals("User")) {
+					%>
+					<li class="nav-item"><a class="nav-link ml-5"
+						href="add_question.jsp">Add Question</a></li>
+					<li class="nav-item dropdown ml-5"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+						role="button" data-toggle="dropdown"> <%=userName%></a>
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li><a class="dropdown-item" href="update_user_profile.jsp">Update
+									Profile</a></li>
+							<li><a class="dropdown-item" href="LogoutServlet">Logout</a></li>
+						</ul></li>
+					<li class="nav-item ml-5"><a class="nav-link"
+						href="LogoutServlet">Logout</a> 
+					<% } else if (role.equals("Admin") && userName == null) {%>
+					<li class="nav-item"><a class="nav-link ml-5" href="user_list.jsp">List
+							Users</a></li>
+					<li class="nav-item"><a class="nav-link ml-5" href="topic_list.jsp">List
+							Topics</a></li>
+					<li class="nav-item"><a class="nav-link ml-5" href="LogoutServlet">Logout</a>
+					</li>
+					<%
+					}
+					%>
+				</ul>
 				<%
-				if (role != null && role.equals("Admin")) {
+				if (userName != null && role.equals("User")) {
 				%>
-				<li class="nav-item active"><a class="nav-link"
-					href="topic_list.jsp">Home <span class="sr-only">(current)</span></a></li>
-				<%
-		}else{
-		%>
-				<li class="nav-item active"><a class="nav-link"
-					href="index.jsp">Home <span class="sr-only">(current)</span></a></li><%} %>
-			</ul>
-			<ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-				<%
-				if (userName == null && role == null) {
-				%>
-				<li class="nav-item active"><a class="nav-link"
-					href="login.jsp">Login</a></li>
-				<li class="nav-item"><a class="nav-link"
-					href="registration.jsp">Register</a></li>
-				<%
-				} else if (userName != null && role.equals("User")) {
-				%>
-				<li class="nav-item"><a class="nav-link"
-					href="question_list.jsp">List Questions</a></li>
-				<div class="dropdown">
-					<button type="button" class="btn btn-secondary dropdown-toggle"
-						role="button" id="dropdownMenuLink" data-toggle="dropdown">
-						<%=userName%>
-					</button>
-
-					<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-						<li><a class="dropdown-item" href="update_user_profile.jsp">Update
-								Profile</a></li>
-						<li><a class="dropdown-item" href="LogoutServlet">Logout</a></li>
-					</ul>
-				</div>
-				<li class="nav-item"><a class="nav-link" href="LogoutServlet">Logout</a>
-				</li>
-				<%
-				} else if (role.equals("Admin") && userName == null) {
-				%>
-				<li class="nav-item"><a class="nav-link" href="user_list.jsp">List
-						Users</a></li>
-				<li class="nav-item"><a class="nav-link" href="add_topic.jsp">Add
-						Topic</a></li>
-				<li class="nav-item"><a class="nav-link" href="topic_list.jsp">List
-						Topics</a></li>
-				<li class="nav-item"><a class="nav-link" href="LogoutServlet">Logout</a>
-				</li>
+				<form class="d-flex w-50" action="ListQuestionServlet" method="get">
+					<input class="form-control ml-5 mt-3" type="search"
+						placeholder="Search question" name="questionSearch" required>
+					<button class="btn btn-success ml-3 mt-3" type="submit">Search</button>
+				</form>
 				<%
 				}
 				%>
-			</ul>
+			</div>
 		</div>
 	</nav>
 </header>

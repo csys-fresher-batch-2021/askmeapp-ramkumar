@@ -1,14 +1,10 @@
 package in.ramkumar.util;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
 import in.ramkumar.exception.DBException;
 
@@ -25,14 +21,11 @@ public class ConnectionUtil {
 	 * @return Connection instance
 	 */
 	public static Connection getConnection() {
-		Properties properties = new Properties();
-		try (BufferedReader fileReader = new BufferedReader(
-				new FileReader("C:\\Users\\ramk2646\\askmeapp-ramkumar\\src\\main\\java\\in\\ramkumar\\util\\db.properties"))) {
-			properties.load(fileReader);
-			Class.forName(properties.getProperty("driverClass"));
-			return DriverManager.getConnection(properties.getProperty("url"), properties.getProperty("userName"),
-					properties.getProperty("pwd"));
-		} catch (ClassNotFoundException | SQLException | IOException e) {
+		try {
+			Class.forName(System.getenv("spring.datasource.driver-class-name"));
+			return DriverManager.getConnection(System.getenv("spring.datasource.url"),
+					System.getenv("spring.datasource.username"), System.getenv("spring.datasource.password"));
+		} catch (ClassNotFoundException | SQLException e) {
 			throw new DBException("Can't establish connection");
 		}
 	}
@@ -68,6 +61,23 @@ public class ConnectionUtil {
 			try {
 				resultSet.close();
 				statement.close();
+				connection.close();
+			} catch (SQLException e) {
+				throw new DBException(INVALID_CONNECTION);
+			}
+		} else {
+			throw new DBException(INVALID_CONNECTION);
+		}
+	}
+
+	/**
+	 * This method closes the given connections.
+	 * 
+	 * @param connection
+	 */
+	public static void close(Connection connection) {
+		if (connection != null) {
+			try {
 				connection.close();
 			} catch (SQLException e) {
 				throw new DBException(INVALID_CONNECTION);

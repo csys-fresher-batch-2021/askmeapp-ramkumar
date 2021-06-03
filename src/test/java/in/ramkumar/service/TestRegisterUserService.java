@@ -30,7 +30,6 @@ class TestRegisterUserService {
 			assertTrue(validUser);
 		} catch (ServiceException e) {
 			fail();
-			e.printStackTrace();
 		}
 	}
 	

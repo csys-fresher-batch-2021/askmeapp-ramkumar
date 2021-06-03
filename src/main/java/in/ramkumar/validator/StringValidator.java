@@ -3,11 +3,11 @@ package in.ramkumar.validator;
 import in.ramkumar.exception.ValidationException;
 
 public class StringValidator {
-	
+
 	private StringValidator() {
-		//Default constructor
+		// Default constructor
 	}
-	
+
 	/**
 	 * This method checks the given string with null and empty.
 	 * 
@@ -17,7 +17,7 @@ public class StringValidator {
 	public static void checkingForNullAndEmpty(String string) {
 		if (string == null) {
 			throw new ValidationException("Null value not accepted");
-		}else if(string.trim().equals("")) {
+		} else if (string.trim().equals("")) {
 			throw new ValidationException("Empty value not accepted");
 		}
 	}

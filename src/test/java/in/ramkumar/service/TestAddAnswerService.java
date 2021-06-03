@@ -27,8 +27,8 @@ class TestAddAnswerService {
 		answer.setAnswerName(answers);
 		AnswerService answerService = new AnswerService();
 		try {
-			questionService.addQuestion(question);
-			answerService.addAnswer(question.getQuestionName(), answer);
+			questionService.addQuestion(question, Integer.valueOf(1));
+			answerService.addAnswer(Integer.valueOf(1), Integer.valueOf(1), answer);
 		} catch (ServiceException e) {
 			fail();
 		}
@@ -50,8 +50,8 @@ class TestAddAnswerService {
 		answer.setAnswerName(answerString);
 		AnswerService answerService = new AnswerService();
 		try {
-			questionService.addQuestion(question);
-			answerService.addAnswer(question.getQuestionName(), answer);
+			questionService.addQuestion(question, Integer.valueOf(1));
+			answerService.addAnswer(Integer.valueOf(1), Integer.valueOf(1), answer);
 		} catch (ServiceException e) {
 			assertEquals(message, e.getMessage());
 		}

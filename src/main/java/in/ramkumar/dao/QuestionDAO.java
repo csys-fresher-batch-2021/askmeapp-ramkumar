@@ -13,15 +13,22 @@ import in.ramkumar.util.ConnectionUtil;
 
 public class QuestionDAO {
 
+	private static final String ANSWERS_COUNT = "answers_count";
+	private static final String USER_ID = "user_id";
+	private static final String QUESTION_ID = "question_id";
+	private static final String QUESTION_DESCRIPTION = "question_description";
+	private static final String QUESTION_NAME = "question_name";
+	private static final String CAN_T_GET_QUESTION_FROM_DATABASE = "Can't get question from database";
+
 	/**
 	 * This method adds given question to the questions table.
 	 * 
 	 * @param question
 	 */
-	public void addQuestion(Question question) {
+	public void addQuestion(Question question, Integer userId) {
 
-		String insertSQLQuery = "INSERT INTO Questions (questionName, description) VALUES (?, ?)";
-
+		String insertSQLQuery = "INSERT INTO Questions (question_name, question_description, user_id, question_words) VALUES (?, ?, ?, to_tsvector('"
+				+ question.getQuestionName() + "'))";
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
 		try {
@@ -29,8 +36,10 @@ public class QuestionDAO {
 			prepareStatement = connection.prepareStatement(insertSQLQuery);
 			prepareStatement.setString(1, question.getQuestionName());
 			prepareStatement.setString(2, question.getDescription());
+			prepareStatement.setInt(3, userId);
 			prepareStatement.executeUpdate();
-		} catch (DBException | SQLException e) {
+		} catch (SQLException e) {
+			e.printStackTrace();
 			throw new DBException("Question can't be added to database");
 		} finally {
 			ConnectionUtil.close(prepareStatement, connection);
@@ -54,12 +63,14 @@ public class QuestionDAO {
 			prepareStatement = connection.prepareStatement(selectSQLQuery);
 			resultSet = prepareStatement.executeQuery();
 			while (resultSet.next()) {
-				String questionName = resultSet.getString("questionName");
-				String description = resultSet.getString("description");
-				Question question = new Question(questionName, description);
+				String questionName = resultSet.getString(QUESTION_NAME);
+				String description = resultSet.getString(QUESTION_DESCRIPTION);
+				Integer questionId = resultSet.getInt(QUESTION_ID);
+				Question question = new Question(questionId, questionName, description);
 				questionList.add(question);
 			}
-		} catch (DBException | SQLException e) {
+		} catch (SQLException e) {
+			e.printStackTrace();
 			throw new DBException("Can't get questions from database");
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);
@@ -69,32 +80,152 @@ public class QuestionDAO {
 	}
 
 	/**
-	 * @param question
-	 * @return Returns the Question object for the given email.
+	 * @param questionId
+	 * @return Returns the Question object for the given questionId.
 	 */
-	public Question getQuestion(String questionString) {
-		Connection connection = ConnectionUtil.getConnection();
+	public Question getQuestionById(Integer questionId) {
+		Connection connection = null;
 		Question question = null;
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
-		String insertSQLQuery = "SELECT * FROM Questions WHERE questionName = ?";
-
+		String insertSQLQuery = "SELECT * FROM Questions WHERE question_id = ?";
+		Integer answersCounts = getAnswersCountByQuestionId(questionId);
 		try {
 			connection = ConnectionUtil.getConnection();
 			prepareStatement = connection.prepareStatement(insertSQLQuery);
-			prepareStatement.setString(1, questionString);
+			connection.prepareStatement(insertSQLQuery);
+			prepareStatement.setInt(1, questionId);
 			resultSet = prepareStatement.executeQuery();
-			while (resultSet.next()) {
-				String questionName = resultSet.getString("questionName");
-				String description = resultSet.getString("description");
-				question = new Question(questionName, description);
+			if (resultSet.next()) {
+				String questionName = resultSet.getString(QUESTION_NAME);
+				String description = resultSet.getString(QUESTION_DESCRIPTION);
+				Integer userId = resultSet.getInt(USER_ID);
+				question = new Question(questionId, questionName, description, userId, answersCounts);
 			}
 		} catch (DBException | SQLException e) {
-			throw new DBException("Can't get question from database");
+			e.printStackTrace();
+			throw new DBException(CAN_T_GET_QUESTION_FROM_DATABASE);
 		} finally {
-			ConnectionUtil.close(resultSet, prepareStatement,  connection);
+			ConnectionUtil.close(resultSet, prepareStatement, connection);
 		}
 		return question;
 	}
 
+	/**
+	 * @param questionId
+	 * @return Returns answers count for given question id
+	 */
+	public Integer getAnswersCountByQuestionId(Integer questionId) {
+		Connection connection = null;
+		Integer answersCount = 0;
+		PreparedStatement prepareStatement = null;
+		ResultSet resultSet = null;
+		String answersCountSQLQuery = "SELECT count(*) as answers_count from Answers where question_id = ?";
+		try {
+			connection = ConnectionUtil.getConnection();
+			prepareStatement = connection.prepareStatement(answersCountSQLQuery);
+			prepareStatement.setInt(1, questionId);
+			resultSet = prepareStatement.executeQuery();
+			if (resultSet.next()) {
+				answersCount = resultSet.getInt(ANSWERS_COUNT);
+			}
+		} catch (DBException | SQLException e) {
+			e.printStackTrace();
+			throw new DBException("Can't get answers count from database");
+		} finally {
+			ConnectionUtil.close(resultSet, prepareStatement, connection);
+		}
+		return answersCount;
+	}
+
+	/**
+	 * @param questionString
+	 * @return Returns the Question object for the given questionString.
+	 */
+	public Question getQuestionByKeywords(String questionString) {
+		Connection connection = null;
+		Question question = null;
+		PreparedStatement prepareStatement = null;
+		ResultSet resultSet = null;
+
+		String insertSQLQuery = "SELECT * FROM Questions WHERE question_name ilike '%" + questionString + "%'";
+		try {
+			connection = ConnectionUtil.getConnection();
+			prepareStatement = connection.prepareStatement(insertSQLQuery);
+			resultSet = prepareStatement.executeQuery();
+			while (resultSet.next()) {
+				String questionName = resultSet.getString(QUESTION_NAME);
+				String description = resultSet.getString(QUESTION_DESCRIPTION);
+				Integer questionId = resultSet.getInt(QUESTION_ID);
+				question = new Question(questionId, questionName, description);
+			}
+		} catch (DBException | SQLException e) {
+			throw new DBException(CAN_T_GET_QUESTION_FROM_DATABASE);
+		} finally {
+			ConnectionUtil.close(resultSet, prepareStatement, connection);
+		}
+		return question;
+	}
+
+	/**
+	 * @param keywords
+	 * @return Returns the text search query for the given question.
+	 */
+	public static String getTextSearchQuery(String keywords) {
+		Connection connection = null;
+		PreparedStatement prepareStatement = null;
+		ResultSet resultSet = null;
+		String textSearchQuery = "";
+
+		String sql = "select plainto_tsquery('" + keywords + "')";
+
+		try {
+			connection = ConnectionUtil.getConnection();
+			prepareStatement = connection.prepareStatement(sql);
+			resultSet = prepareStatement.executeQuery();
+			if (resultSet.next()) {
+				textSearchQuery = resultSet.getString(1);
+			}
+		} catch (DBException | SQLException e) {
+			throw new DBException("Can't get text search from database");
+		} finally {
+			ConnectionUtil.close(resultSet, prepareStatement, connection);
+		}
+		return textSearchQuery;
+	}
+
+	/**
+	 * @param question
+	 * @return Returns the list of related questions for the given question
+	 *         keywords.
+	 */
+	public List<Question> getRelatedQuestions(String question) {
+		String textSearchQuery = QuestionDAO.getTextSearchQuery(question);
+		Connection connection = null;
+		PreparedStatement prepareStatement = null;
+		ResultSet resultSet = null;
+		List<Question> questionList = new ArrayList<>();
+		String searchingKeywords = textSearchQuery.replace("'", "").replace("&", "|");
+		String sql = "select question_name, question_id, question_description, ts_rank(Questions.question_words, to_tsquery('"
+				+ searchingKeywords + "')) as rank " + "from Questions where Questions.question_words @@ to_tsquery('"
+				+ searchingKeywords + "') order by rank desc";
+		try {
+			connection = ConnectionUtil.getConnection();
+			prepareStatement = connection.prepareStatement(sql);
+			resultSet = prepareStatement.executeQuery();
+			while (resultSet.next()) {
+				String questionName = resultSet.getString(QUESTION_NAME);
+				String description = resultSet.getString(QUESTION_DESCRIPTION);
+				Integer questionId = resultSet.getInt(QUESTION_ID);
+				Question questionObject = new Question(questionId, questionName, description);
+				questionList.add(questionObject);
+			}
+		} catch (DBException | SQLException e) {
+			e.printStackTrace();
+			throw new DBException("Can't get questions from database");
+		} finally {
+			ConnectionUtil.close(resultSet, prepareStatement, connection);
+		}
+		return questionList;
+	}
 }

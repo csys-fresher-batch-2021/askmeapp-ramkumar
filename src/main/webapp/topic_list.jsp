@@ -39,7 +39,6 @@
 				"</td><td>" + topic.topicName + 
 				"</td>" + "<td><a class=\"btn btn-primary\" href=\"update_topic.jsp?topicId=" + topic.topicId + "\"" + ">Update</a></td></tr>";
 			}
-			console.log(content);
 			document.querySelector("#topicList").innerHTML= content;
 		})
 	}

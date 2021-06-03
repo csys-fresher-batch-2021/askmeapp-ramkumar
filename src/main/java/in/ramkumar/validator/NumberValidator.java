@@ -3,8 +3,9 @@ package in.ramkumar.validator;
 import in.ramkumar.exception.ValidationException;
 
 public class NumberValidator {
-	
-	private NumberValidator() {}
+
+	private NumberValidator() {
+	}
 
 	/**
 	 * This method checks the given number with null and empty.

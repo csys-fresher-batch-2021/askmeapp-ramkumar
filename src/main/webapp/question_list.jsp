@@ -13,34 +13,59 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
-	<%
-	QuestionService questionService = new QuestionService();
-	AnswerService answerService = new AnswerService();
-	List<Question> questionList = questionService.getAllQuestions();
-	for (Question questionObj : questionList) {
-	%>
-	<h5><%=questionObj.getQuestionName()%></h5>
-	<%
-	if (questionObj.getDescription() != null) {
-	%>
-	<span><%=questionObj.getDescription()%></span>
-	<%
-	}
-	%>
-	<a href="answer.jsp?question=<%=questionObj.getQuestionName()%>"
-		class="btn btn-secondary">Answer</a>
-	<%
-	List<Answer> answerList = answerService.getAllAnswers(questionObj.getQuestionName());
-	if (answerList.size() > 0) {
-	%>
-	<h5>Answers :</h5>
-	<%
-	for (Answer answer : answerList) {
-		out.println("<h6>" + answer.getAnswerName() + "</h6>");
-	}
-	out.println("<hr/>");
-	}
-	}
-	%>
+	<main class="container">
+		<%
+		String role = (String) session.getAttribute("Logged_In_UserRole");
+		if (role == null) {
+			response.sendRedirect("login.jsp");
+		} else {
+			List<Question> questionList = (List<Question>) request.getAttribute("questionList");
+			if (questionList.size() <= 0) {
+		%>
+		<h2>No search results</h2>
+		<%
+		} else {
+		%>
+		<div class="container-fluid well">
+			<h4 class="text-muted">Search Results</h4>
+			<%
+			for (Question question : questionList) {
+				QuestionService questionService = new QuestionService();
+				Integer answersCount = questionService.getAnswersCountByQuestionId(question.getQuestionId());
+				question.setAnswersCount(answersCount);
+			%>
+			<div class="row">
+				<div class="col">
+					<div class="card my-1">
+						<div class="card-body">
+							<div class="row ml-1">
+								<a
+									href="ListAnswerServlet?questionId=<%=question.getQuestionId()%>"
+									class="link-dark" style="font-size: 18px; font-weight: bold"><%=question.getQuestionName()%></a>
+							</div>
+							<div class="row ml-1 mt-1">
+								<a
+									href="ListAnswerServlet?questionId=<%=question.getQuestionId()%>"
+									class="link-dark"><%=question.getAnswersCount()%> Answers</a>
+							</div>
+							<div class="row ml-1 mt-4">
+								<a
+									href="add_answer.jsp?questionId=<%=question.getQuestionId()%>&question=<%=question.getQuestionName()%>"
+									class="link-success">Answer</a>
+							</div>
+						</div>
+					</div>
+					<%
+					}
+					}
+					%>
+				</div>
+			</div>
+		</div>
+		<%
+		}
+		%>
+
+	</main>
 </body>
 </html>

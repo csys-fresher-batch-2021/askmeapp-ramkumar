@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import in.ramkumar.exception.ServiceException;
 import in.ramkumar.model.Question;
@@ -26,20 +27,26 @@ public class AddQuestionServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		Integer userId = (Integer) session.getAttribute("Logged_In_UserId");
 		String question = request.getParameter("question");
 		String description = request.getParameter("description");
-		Question questionObject = new Question();
-		questionObject.setQuestionName(question);
-		questionObject.setDescription(description);
+		Question addQuestionObject = new Question();
+		addQuestionObject.setQuestionName(question);
+		addQuestionObject.setDescription(description);
 		QuestionService questionService = new QuestionService();
 		try {
-			questionService.addQuestion(questionObject);
-			response.sendRedirect("question_list.jsp?infoMessage=Question Added");
+			Question getQuestionObject = questionService.addQuestion(addQuestionObject, userId);
+			if (getQuestionObject != null) {
+				response.sendRedirect("question_list.jsp?question="+question);				
+			}else {
+				Question questionObject = questionService.getQuestion(question);
+				response.sendRedirect("related_topics.jsp?infoMessage= Question Added&questionId="+questionObject.getQuestionId());				
+			}
 		} catch (ServiceException e) {
 			String message = e.getMessage();
-			response.sendRedirect("index.jsp?errorMessage=" + message);
+			response.sendRedirect("add_question.jsp?errorMessage=" + message);
 		}
-
 	}
 
 }
