@@ -32,16 +32,14 @@ class TestAddQuestionService {
 	 * Validation with valid question and valid description.
 	 */
 	@ParameterizedTest
-	@CsvSource({
-		"What is Java?, Help me to answer for this to talk about it in interview"
-	})
+	@CsvSource({ "What is Java?, Help me to answer for this to talk about it in interview" })
 	void testAddQuestionWithValidInputs(String questionString, String desString) {
 		Question question = new Question();
 		question.setQuestionName(questionString);
 		question.setDescription(desString);
 		QuestionService questionService = new QuestionService();
 		try {
-			questionService.addQuestion(question);
+			questionService.addQuestion(question, Integer.valueOf(1));
 		} catch (ServiceException e) {
 			fail();
 		}
@@ -51,17 +49,14 @@ class TestAddQuestionService {
 	 * Validation with valid question and null description.
 	 */
 	@ParameterizedTest
-	@CsvSource({
-		", What is meant by Java?, Null value not accepted",
-		"'', '', Empty value not accepted"
-		})
+	@CsvSource({ ", What is meant by Java?, Null value not accepted", "'', '', Empty value not accepted" })
 	void testAddQuestionWithInValidInputs(String questioString, String answerString, String message) {
 		Question question = new Question();
 		question.setQuestionName(questioString);
 		question.setDescription(answerString);
 		QuestionService questionService = new QuestionService();
 		try {
-			questionService.addQuestion(question);
+			questionService.addQuestion(question, Integer.valueOf(1));
 		} catch (ServiceException e) {
 			assertEquals(message, e.getMessage());
 		}
@@ -77,7 +72,7 @@ class TestAddQuestionService {
 		question.setDescription(validDescription);
 		QuestionService questionService = new QuestionService();
 		try {
-			questionService.addQuestion(question);
+			questionService.addQuestion(question, Integer.valueOf(1));
 		} catch (ServiceException e) {
 			String message = e.getMessage();
 			assertEquals("Questoin length can't be 300", message);
@@ -94,10 +89,100 @@ class TestAddQuestionService {
 		question.setDescription(descriptionWithGreaterThan600Letters);
 		QuestionService questionService = new QuestionService();
 		try {
-			questionService.addQuestion(question);
+			questionService.addQuestion(question, Integer.valueOf(1));
 		} catch (ServiceException e) {
 			String message = e.getMessage();
 			assertEquals("Description length can't be 600", message);
 		}
 	}
+
+	/**
+	 * Validation of getting question object of question name with valid inputs.
+	 */
+	@Test
+	void testGetQuestionWithValidInputs() {
+		QuestionService questionService = new QuestionService();
+		try {
+			Question question = questionService.getQuestion("What is Java");
+			assertNotNull(question);
+		} catch (ServiceException e) {
+			fail();
+		}
+	}
+
+	/**
+	 * Validation of getting question object of question name with invalid inputs.
+	 */
+	@Test
+	void testGetQuestionWithInvalidInputs() {
+		QuestionService questionService = new QuestionService();
+		try {
+			Question question = questionService.getQuestion("no question");
+			assertNull(question);
+		} catch (ServiceException e) {
+			fail();
+		}
+	}
+
+	/**
+	 * Validation of getting answers count for the given questionId.
+	 */
+	@Test
+	void testGetAnswersCountByQuestionIdWithValidInputs() {
+		QuestionService questionService = new QuestionService();
+		try {
+			Integer answersCountByQuestionId = questionService.getAnswersCountByQuestionId(Integer.valueOf(28));
+			assertTrue(answersCountByQuestionId > 1);
+		} catch (ServiceException e) {
+			fail();
+		}
+	}
+
+	/**
+	 * Validation of getting answers count for the given questionId with invalid
+	 * inputs.
+	 */
+	@ParameterizedTest
+	@CsvSource({ "0", "-1" })
+	void testGetAnswersCountByQuestionIdWithInvalidInputs(Integer questionId) {
+		QuestionService questionService = new QuestionService();
+		try {
+			Integer answersCountByQuestionId = questionService.getAnswersCountByQuestionId(questionId);
+			assertTrue(answersCountByQuestionId < 1);
+		} catch (ServiceException e) {
+		}
+	}
+	
+	/**
+	 * Validation of getting question object of questionId with valid inputs.
+	 */
+	@Test
+	void testGetQuestionByIdWithValidInputs() {
+		QuestionService questionService = new QuestionService();
+		try {
+			Question question = questionService.getQuestionById(Integer.valueOf(28));
+			assertNotNull(question);
+		} catch (ServiceException e) {
+			fail();
+		}
+	}
+
+	/**
+	 * Validation of getting question object of questionId with invalid inputs.
+	 */
+	@ParameterizedTest
+	@CsvSource({
+		"0",
+		"-2"
+	})
+	void testGetQuestionByIdWithInvalidInputs(Integer questionId) {
+		QuestionService questionService = new QuestionService();
+		try {
+			Question question = questionService.getQuestionById(questionId);
+			assertNull(question);
+		} catch (ServiceException e) {
+			fail();
+		}
+	}
+
 }

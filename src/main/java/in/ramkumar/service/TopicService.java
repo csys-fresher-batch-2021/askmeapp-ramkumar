@@ -1,8 +1,10 @@
 package in.ramkumar.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import in.ramkumar.dao.TopicDAO;
+import in.ramkumar.dto.TopicReportDTO;
 import in.ramkumar.exception.DBException;
 import in.ramkumar.exception.ServiceException;
 import in.ramkumar.exception.ValidationException;
@@ -60,7 +62,7 @@ public class TopicService {
 			topic = topicDAO.getTopicByName(topicName);
 		} catch (ValidationException e) {
 			throw new ServiceException(e.getMessage());
-		}catch (DBException e) {
+		} catch (DBException e) {
 			throw new ServiceException("Unable to get topic");
 		}
 		return topic;
@@ -83,6 +85,18 @@ public class TopicService {
 		return topic;
 	}
 
+	/**
+	 * @return Returns list of related questions.
+	 */
+	public List<Topic> getRelatedTopics(String keywords) {
+		List<Topic> topicList = null;
+		try {
+			topicList = topicDAO.getRelatedTopicsByKeywords(keywords);
+		} catch (DBException e) {
+			throw new ServiceException("Unable to get questions");
+		}
+		return topicList;
+	}
 
 	/**
 	 * Validates the given topic.
@@ -126,6 +140,165 @@ public class TopicService {
 			throw new ServiceException("Unable to change topic");
 		}
 		return topicObject != null;
+	}
+
+	/**
+	 * This method adds the user interested topics for the given userId.
+	 * 
+	 * @param topicNameList
+	 * @param userId
+	 */
+	public void addUserInterestedTopics(String[] topicNameList, Integer userId) {
+		List<Topic> topicList = new ArrayList<>();
+		for (String topicName : topicNameList) {
+			Topic topic = getTopicByName(topicName);
+			topicList.add(topic);
+		}
+		try {
+			NumberValidator.checkingForNullAndEmpty(userId);
+			topicDAO.addUserInterestedTopics(topicList, userId);
+		} catch (DBException e) {
+			throw new ServiceException("Unable to add user interested topics");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		}
+	}
+
+	/**
+	 * 
+	 * @return Returns the list of topics that are most followed by followers.
+	 */
+	public List<Topic> getUserInterestedTopics() {
+		List<Topic> userInterestedTopics;
+		try {
+			userInterestedTopics = topicDAO.getUserInterestedTopics();
+		} catch (DBException e) {
+			throw new ServiceException("Unable to get user interested topics");
+		}
+		return userInterestedTopics;
+	}
+
+	/**
+	 * This method adds the list of topics for the given questionId.
+	 * 
+	 * @param questionId
+	 * @param questionRelatedTopics
+	 */
+	public void addQuestionRelatedTopics(Integer questionId, String[] questionRelatedTopics) {
+		List<Integer> topicList = new ArrayList<>();
+		TopicService topicService = new TopicService();
+		for (String topicName : questionRelatedTopics) {
+			Topic topic = topicService.getTopicByName(topicName);
+			topicList.add(topic.getTopicId());
+		}
+		try {
+			NumberValidator.checkingForNullAndEmpty(questionId);
+			topicDAO.addQuestionRelatedTopics(questionId, topicList);
+		} catch (DBException e) {
+			throw new ServiceException("Unable to add question related topics");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		}
+	}
+
+	/**
+	 * This method allows the user to follow the given topicId
+	 * 
+	 * @param topicId
+	 * @param userId
+	 * @return
+	 */
+	public boolean followTopic(Integer topicId, Integer userId) {
+		boolean isUserFollowed = false;
+		try {
+			NumberValidator.checkingForNullAndEmpty(userId);
+			NumberValidator.checkingForNullAndEmpty(topicId);
+			isUserFollowed = topicDAO.followTopic(topicId, userId);
+		} catch (DBException e) {
+			e.printStackTrace();
+			throw new ServiceException("Unable to follow topic");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		}
+		return isUserFollowed;
+	}
+
+	/**
+	 * This method allows the user to unfollow the given topicId
+	 * 
+	 * @param topicId
+	 * @param userId
+	 * @return
+	 */
+	public boolean unFollowTopic(Integer topicId, Integer userId) {
+		boolean isUserUnfollowed = false;
+		try {
+			NumberValidator.checkingForNullAndEmpty(userId);
+			NumberValidator.checkingForNullAndEmpty(topicId);
+			isUserUnfollowed = topicDAO.unFollowTopic(topicId, userId);
+		} catch (DBException e) {
+			throw new ServiceException("Unable to unfollow topic");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		}
+		return isUserUnfollowed;
+	}
+
+	/**
+	 * This method checks the user is following the topic or not.
+	 * 
+	 * @param topicId
+	 * @param userId
+	 * @return Returns true if the user already following the given topicId,
+	 *         otherwise false.
+	 */
+	public boolean isUserFollowingTopic(Integer topicId, Integer userId) {
+		boolean isUserFollowing = false;
+		try {
+			NumberValidator.checkingForNullAndEmpty(userId);
+			NumberValidator.checkingForNullAndEmpty(topicId);
+			isUserFollowing = topicDAO.isUserFollowingTopic(topicId, userId);
+		} catch (DBException e) {
+			throw new ServiceException("Unable to get user followed topic");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		}
+		return isUserFollowing;
+	}
+
+	/**
+	 * This method returns list of topic report for the given topicId
+	 * 
+	 * @param topicId
+	 * @return
+	 */
+	public List<TopicReportDTO> getTopicReports(Integer topicId) {
+		List<TopicReportDTO> topicReports;
+		try {
+			NumberValidator.checkingForNullAndEmpty(topicId);
+			topicReports = topicDAO.getTopicReports(topicId);
+		} catch (DBException e) {
+			throw new ServiceException("Unable to get topic reoprts");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		}
+		return topicReports;
+	}
+
+	/**
+	 * This method returns the list of topics that are followed by the given userId
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public List<Topic> getUserFollowingTopics(Integer userId) {
+		List<Topic> userFollowingTopics;
+		try {
+			userFollowingTopics = topicDAO.getUserFollowingTopics(userId);
+		} catch (DBException e) {
+			throw new ServiceException("Unable to get user following topics");
+		}
+		return userFollowingTopics;
 	}
 
 }

@@ -8,19 +8,28 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
-	<main class="container-fluid">
+	<main class="container">
 		<jsp:include page="message.jsp"></jsp:include>
 		<form action="RegistrationServlet" method="post">
-			<label for="name">Enter your Name</label> <br /> <input type="text"
-				name="name" id="name" autofocus required placeholder="Your Name" /> <br /> <label
-				for="email">Enter your Email</label> <br /> <input type="email"
-				name="email" id="email" required placeholder="Your Email" /> <br /> <label
-				for="password">Enter your Password</label> <br /> <input
-				type="password" name="password" id="password" required
-				placeholder="Your Password" /> <br />
+			<div class="mb-3">
+				<label class="form-label" for="name">Enter your Name <span
+					style="color: red"> * </span></label> <input class="form-control" type="text"
+					name="name" id="name" autofocus required placeholder="Name" />
+			</div>
+			<div class="mb-3">
+				<label class="form-label" for="email">Enter your Email <span
+					style="color: red"> * </span></label> <input class="form-control"
+					type="email" name="email" id="email" required placeholder="Email" />
+			</div>
+			<div class="mb-3">
+				<label class="form-label" for="password">Enter your Password <span
+					style="color: red"> * </span></label> <input class="form-control"
+					type="password" name="password" id="password" required
+					placeholder="Password" />
+			</div>
 			<button type="submit" class="btn btn-primary">Signup</button>
+			<a href="login.jsp" class="btn btn-primary">Login</a>
 		</form>
 	</main>
-
 </body>
 </html>

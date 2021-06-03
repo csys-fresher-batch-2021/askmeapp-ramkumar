@@ -19,14 +19,16 @@ public class UpdateTopicServlet extends HttpServlet {
     
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Integer topicId = Integer.parseInt(request.getParameter("topicId"));
 		String newTopicName = request.getParameter("newTopic");
 		TopicService topicService = new TopicService();
 		try {
+			Integer topicId = Integer.parseInt(request.getParameter("topicId"));
 			topicService.changeTopicName(topicId, newTopicName);
 			response.sendRedirect("topic_list.jsp?infoMessage=Topic updated successfully");
 		}catch (ServiceException e) {
 			response.sendRedirect("topic_list.jsp?errorMessage=" + e.getMessage());
+		}catch (NumberFormatException e) {
+			response.sendRedirect("topic_list.jsp?errorMessage=Invalid Topic Id");
 		}
 	}
 }

@@ -20,7 +20,6 @@ class TestTopicDAO {
 			TopicDAO topicDAO = new TopicDAO();
 			topicDAO.addTopic(topic);
 		} catch (DBException e) {
-			e.printStackTrace();
 			fail();
 		}
 	}

@@ -19,7 +19,6 @@ public class TestUserDAO {
 			UserDAO userDAO = new UserDAO();
 			userDAO.addUser(user);
 		} catch (DBException e) {
-			e.printStackTrace();
 			fail();
 		}
 	}

@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import in.ramkumar.exception.ServiceException;
 import in.ramkumar.model.Answer;
@@ -27,15 +28,19 @@ public class AddAnswerServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String answer = request.getParameter("answer");
-		String question = request.getParameter("question");
 		Answer answerObject = new Answer();
 		answerObject.setAnswerName(answer);
 		AnswerService answerService = new AnswerService();
+		HttpSession session = request.getSession();
+		Integer userId =  (Integer) session.getAttribute("Logged_In_UserId");
 		try {
-			answerService.addAnswer(question, answerObject);
-			response.sendRedirect("question_list.jsp?infoMessage=Answer Added");
+			Integer questionId =Integer.parseInt(request.getParameter("questionId"));
+			answerService.addAnswer(questionId, userId, answerObject);
+			response.sendRedirect("index.jsp?infoMessage=Answer Added");
 		} catch (ServiceException e) {
 			response.sendRedirect("answer.jsp?errorMessage=" + e.getMessage());
+		} catch (NumberFormatException e) {
+			response.sendRedirect("index.jsp?errorMessage=Invalid Question Id");
 		}
 	}
 

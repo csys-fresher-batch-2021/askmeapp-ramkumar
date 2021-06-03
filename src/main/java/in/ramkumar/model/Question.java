@@ -2,17 +2,50 @@ package in.ramkumar.model;
 
 public class Question {
 
+	private Integer questionId;
 	private String questionName;
 	private String description;
-	
+	private Integer userId;
+	private Integer answersCount;
+
 	public Question() {
-		
+
+	}
+
+	public Question(Integer questionId, String questionName, String description, Integer userId, Integer answersCount) {
+		this.questionId = questionId;
+		this.questionName = questionName;
+		this.description = description;
+		this.userId = userId;
+		this.answersCount = answersCount;
 	}
 
 	public Question(String questionName, String description) {
-		super();
 		this.questionName = questionName;
 		this.description = description;
+	}
+
+	public Question(Integer questionId, String questionName, String description) {
+		this.questionId = questionId;
+		this.questionName = questionName;
+		this.description = description;
+	}
+
+	/**
+	 * 
+	 * @return questionId
+	 */
+	public Integer getQuestionId() {
+		return questionId;
+	}
+
+	/**
+	 * Sets the questionId
+	 * 
+	 * @param questionId
+	 */
+	public void setQuestionId(Integer questionId) {
+		this.questionId = questionId;
 	}
 
 	/**
@@ -52,13 +85,48 @@ public class Question {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	/**
-	 * Returns the string representation of Question object.
+	 * 
+	 * @return userId
+	 */
+	public Integer getUserId() {
+		return userId;
+	}
+
+	/**
+	 * Sets the userId
+	 * 
+	 * @param userId
+	 */
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	/**
+	 * 
+	 * @return answersCount
+	 */
+	public Integer getAnswersCount() {
+		return answersCount;
+	}
+
+	/**
+	 * Sets the answersCount
+	 * 
+	 * @param answersCount
+	 */
+	public void setAnswersCount(Integer answersCount) {
+		this.answersCount = answersCount;
+	}
+
+	/**
+	 * Returns the string representation of for the Question object.
 	 */
 	@Override
 	public String toString() {
-		return "Question [questionName=" + questionName + ", description=" + description + "]";
+		return "Question [questionId=" + questionId + ", questionName=" + questionName + ", description=" + description
+				+ ", userId=" + userId + ", answersCount=" + answersCount + "]";
 	}
 
 }

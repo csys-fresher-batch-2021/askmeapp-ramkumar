@@ -30,19 +30,20 @@ public class LoginServlet extends HttpServlet {
 
 		if (role.equals("User")) {
 			try {
-				User user = userService.getUser(email);
+				User user = userService.getUserByEmail(email);
 				boolean validUser = userService.login(email, password);
 				if (validUser) {
 					HttpSession session = request.getSession();
 					session.setAttribute("Logged_In_UserName", user.getName());
 					session.setAttribute("Logged_In_UserRole", role);
 					session.setAttribute("Logged_In_UserEmail", user.getEmail());
+					session.setAttribute("Logged_In_UserId", user.getUserId());
 					response.sendRedirect("index.jsp?infoMessage=Login successful");
 				}
 			} catch (ServiceException e) {
 				response.sendRedirect("login.jsp?errorMessage=" + e.getMessage());
 			}
-		} else if (role.equals("Admin")) {
+		} else if(role.equals("Admin")) {
 			try {
 				boolean validAdmin = userService.adminLogin(email, password);
 				if (validAdmin) {

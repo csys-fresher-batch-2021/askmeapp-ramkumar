@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +18,6 @@ import in.ramkumar.service.TopicService;
 /**
  * Servlet implementation class ListTopicServlet
  */
-@WebServlet("/ListTopicServlet")
 public class ListTopicServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     
@@ -35,6 +33,8 @@ public class ListTopicServlet extends HttpServlet {
 			out.flush();
 		} catch (ServiceException e) {
 			response.sendRedirect("topic_list.jsp?errorMessage=" + e.getMessage());
+		} catch (IOException e) {
+			response.sendRedirect("topic_list.jsp?errorMessage=Question list failed");			
 		}
 	}
 

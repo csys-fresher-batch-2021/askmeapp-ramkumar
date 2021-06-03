@@ -20,7 +20,6 @@ class TestConnectionUtil {
 			 Connection connection = ConnectionUtil.getConnection();
 			 connection.close();
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			fail();
 		}
 	}
@@ -35,7 +34,6 @@ class TestConnectionUtil {
 			PreparedStatement prepareStatement = connection.prepareStatement("SELECT * FROM Users");
 			ConnectionUtil.close(prepareStatement, connection);
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			fail();
 		}
 	}

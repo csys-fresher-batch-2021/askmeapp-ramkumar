@@ -40,7 +40,7 @@ public class QuestionValidator {
 	 * 
 	 * @param questionObject
 	 */
-	public static void validateDescription(Question questionObject){
+	public static void validateDescription(Question questionObject) {
 		String description = questionObject.getDescription();
 		Integer numberOfCharactersForDescription = 600;
 		int descriptionLength;

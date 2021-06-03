@@ -5,9 +5,9 @@ import in.ramkumar.exception.ValidationException;
 import in.ramkumar.validator.StringValidator;
 
 public class StringUtil {
-	
+
 	private StringUtil() {
-		//Default constructor
+		// Default constructor
 	}
 
 	/**

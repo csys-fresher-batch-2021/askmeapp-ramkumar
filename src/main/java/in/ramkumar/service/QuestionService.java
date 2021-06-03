@@ -8,6 +8,7 @@ import in.ramkumar.exception.ServiceException;
 import in.ramkumar.exception.UtilException;
 import in.ramkumar.exception.ValidationException;
 import in.ramkumar.model.Question;
+import in.ramkumar.validator.NumberValidator;
 import in.ramkumar.validator.QuestionValidator;
 import in.ramkumar.validator.StringValidator;
 
@@ -21,28 +22,28 @@ public class QuestionService {
 	 * then it will be added to questionList.
 	 * 
 	 * @param question
+	 * @param userId
+	 * @return Returns the question if the question already exist.
 	 */
-	public void addQuestion(Question question) {
+	public Question addQuestion(Question question, Integer userId) {
 		Question questionObject = null;
 		String description = question.getDescription();
 		try {
 			QuestionValidator.validateQuestion(question);
 			questionObject = getQuestion(question.getQuestionName());
-			if (questionObject != null) {
-				throw new ServiceException("Question alredy exists");
-			}
 			if (description != null && !description.trim().equals("")) {
 				QuestionValidator.validateDescription(question);
-				questionDAO.addQuestion(question);
+				questionDAO.addQuestion(question, userId);
 			} else {
 				question.setDescription(null);
-				questionDAO.addQuestion(question);
+				questionDAO.addQuestion(question, userId);
 			}
 		} catch (DBException e) {
 			throw new ServiceException(UNABLE_TO_ADD_QUESTION);
 		} catch (ValidationException | UtilException | ServiceException e) {
 			throw new ServiceException(e.getMessage());
 		}
+		return questionObject;
 	}
 
 	/**
@@ -77,7 +78,7 @@ public class QuestionService {
 		Question question = null;
 		try {
 			StringValidator.checkingForNullAndEmpty(questionName);
-			question = questionDAO.getQuestion(questionName);
+			question = questionDAO.getQuestionByKeywords(questionName);
 		} catch (DBException e) {
 			throw new ServiceException("Unable to get question");
 		} catch (ValidationException e) {
@@ -86,4 +87,54 @@ public class QuestionService {
 		return question;
 	}
 
+	/**
+	 * 
+	 * @param questionId
+	 * @return Returns the answers count for the given questionId.
+	 */
+	public Integer getAnswersCountByQuestionId(Integer questionId) {
+		Integer answersCount = 0;
+		try {
+			NumberValidator.checkingForNullAndEmpty(questionId);
+			answersCount = questionDAO.getAnswersCountByQuestionId(questionId);
+		} catch (DBException e) {
+			throw new ServiceException("Unable to get answers count");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		}
+		return answersCount;
+	}
+
+	/**
+	 * @param questionId
+	 * @return Returns the Question object for the given questionId.
+	 */
+	public Question getQuestionById(Integer questionId) {
+		Question question = null;
+		try {
+			NumberValidator.checkingForNullAndEmpty(questionId);
+			question = questionDAO.getQuestionById(questionId);
+		} catch (DBException e) {
+			throw new ServiceException("Unable to get question");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		}
+		return question;
+	}
+
+	/**
+	 * @return Returns list of related questions.
+	 */
+	public List<Question> getRelatedQuestions(String question) {
+		List<Question> questionsList = null;
+		try {
+			StringValidator.checkingForNullAndEmpty(question);
+			questionsList = questionDAO.getRelatedQuestions(question);
+		} catch (DBException e) {
+			throw new ServiceException("Unable to get questions");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		}
+		return questionsList;
+	}
 }

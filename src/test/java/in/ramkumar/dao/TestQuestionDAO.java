@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import in.ramkumar.exception.DBException;
 import in.ramkumar.model.Question;
-import in.ramkumar.service.QuestionService;
 
 public class TestQuestionDAO {
 
@@ -19,9 +18,8 @@ public class TestQuestionDAO {
 			Question question = new Question();
 			question.setQuestionName("What is Javacript?");
 			QuestionDAO questionDAO = new QuestionDAO();
-			questionDAO.addQuestion(question);
+			questionDAO.addQuestion(question, Integer.valueOf(1));
 		} catch (DBException e) {
-			e.printStackTrace();
 			fail("Not yet implemented");
 		}
 	}
