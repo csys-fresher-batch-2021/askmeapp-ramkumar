@@ -34,7 +34,6 @@ public class AnswerDAO {
 			prepareStatement.setInt(3, userId);
 			prepareStatement.executeUpdate();
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			throw new DBException("Answer can't be added to database");
 		} finally {
 			ConnectionUtil.close(prepareStatement, connection);
