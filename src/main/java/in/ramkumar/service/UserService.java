@@ -248,7 +248,7 @@ public class UserService {
 			User newUser = getUserByEmail(newEmail);
 			if (user != null && !user.getEmail().equalsIgnoreCase(newEmail) && newUser == null) {
 				userDAO.updateUserEmail(userId, newEmail);
-			} else if(!user.getEmail().equalsIgnoreCase(newEmail) && newUser != null) {
+			} else if(user != null && !user.getEmail().equalsIgnoreCase(newEmail) && newUser != null) {
 				throw new ServiceException("Sorry email already exists");
 			}
 		} catch (ServiceException | ValidationException e) {
