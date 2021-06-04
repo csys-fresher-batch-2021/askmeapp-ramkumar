@@ -47,7 +47,7 @@
 					}
 					%>
 				</div>
-				<div class="col-10">Column</div>
+				<div class="col-10"></div>
 			</div>
 		</div>
 	</main>

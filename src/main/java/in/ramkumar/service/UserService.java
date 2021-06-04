@@ -245,9 +245,11 @@ public class UserService {
 			StringValidator.checkingForNullAndEmpty(newEmail);
 			validateEmail(newEmail);
 			user = getUserById(userId); // Checking user already exists in the users database.
-
-			if (user != null) {
+			User newUser = getUserByEmail(newEmail);
+			if (user != null && !user.getEmail().equalsIgnoreCase(newEmail) && newUser == null) {
 				userDAO.updateUserEmail(userId, newEmail);
+			} else if(user != null && !user.getEmail().equalsIgnoreCase(newEmail) && newUser != null) {
+				throw new ServiceException("Sorry email already exists");
 			}
 		} catch (ServiceException | ValidationException e) {
 			throw new ServiceException(e.getMessage());

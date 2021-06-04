@@ -57,10 +57,6 @@
 				<div class="row ml-1">
 					<h4><%=answer.getAnswerName()%></h4>
 				</div>
-				<div class="row ml-1 mt-4">
-					<button class="btn btn-outline-info">Upvote</button>
-					<button class="btn btn-outline-info">Downvote</button>
-				</div>
 			</div>
 		</div>
 		<%

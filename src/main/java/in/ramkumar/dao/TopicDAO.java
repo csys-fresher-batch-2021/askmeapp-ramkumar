@@ -14,6 +14,7 @@ import in.ramkumar.util.ConnectionUtil;
 
 public class TopicDAO {
 
+	private static final String CAN_T_GET_TOPICS_FROM_DATABASE = "Can't get topics from database";
 	private static final String TOPIC_FOLLOWERS_COUNT = "topic_followers_count";
 	private static final String TOPIC_ID = "topic_id";
 	private static final String TOPIC_NAME = "topic_name";
@@ -49,7 +50,7 @@ public class TopicDAO {
 	public List<Topic> getAllTopics() {
 		List<Topic> topicList = new ArrayList<>();
 
-		String selectSQLQuery = "SELECT * FROM Topics";
+		String selectSQLQuery = "SELECT topic_id, topic_name FROM Topics";
 
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
@@ -66,7 +67,7 @@ public class TopicDAO {
 				topicList.add(topic);
 			}
 		} catch (DBException | SQLException e) {
-			throw new DBException("Can't get topics from database");
+			throw new DBException(CAN_T_GET_TOPICS_FROM_DATABASE);
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);
 		}
@@ -79,9 +80,7 @@ public class TopicDAO {
 	 */
 	public Topic getTopicById(Integer topicId) {
 		Topic topic = null;
-		String selectSQLQuery = "SELECT count(*) topic_followers_count, t.topic_name from Topics t "
-				+ " inner join TopicFollowers tf on t.topic_id = tf.topic_id where t.topic_id = ?"
-				+ " group by(t.topic_id)";
+		String selectSQLQuery = "select topic_id, topic_name from Topics where topic_id = ?";
 
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
@@ -93,9 +92,8 @@ public class TopicDAO {
 			prepareStatement.setInt(1, topicId);
 			resultSet = prepareStatement.executeQuery();
 			if (resultSet.next()) {
-				Integer topicFollowersCount = resultSet.getInt(TOPIC_FOLLOWERS_COUNT);
 				String topicName = resultSet.getString(TOPIC_NAME);
-				topic = new Topic(topicId, topicName, topicFollowersCount);
+				topic = new Topic(topicId, topicName);
 			}
 		} catch (SQLException | DBException e) {
 			throw new DBException(CAN_T_GET_TOPIC_FROM_DATABASE);
@@ -111,9 +109,7 @@ public class TopicDAO {
 	 */
 	public Topic getTopicByName(String topicName) {
 		Topic topic = null;
-		String selectSQLQuery = "select t.topic_id, count(*) topic_followers_count, t.topic_name from Topics t"
-				+ " inner join TopicFollowers tf on t.topic_id = tf.topic_id "
-				+ " where t.topic_name ilike ? group by(t.topic_id);";
+		String selectSQLQuery = "select topic_id, topic_name from Topics where topic_name ilike ?";
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
@@ -123,9 +119,8 @@ public class TopicDAO {
 			prepareStatement.setString(1, topicName);
 			resultSet = prepareStatement.executeQuery();
 			if (resultSet.next()) {
-				Integer topicFollowersCount = resultSet.getInt(TOPIC_FOLLOWERS_COUNT);
 				Integer topicId = resultSet.getInt(TOPIC_ID);
-				topic = new Topic(topicId, topicName, topicFollowersCount);
+				topic = new Topic(topicId, topicName);
 			}
 		} catch (SQLException | DBException e) {
 			throw new DBException(CAN_T_GET_TOPIC_FROM_DATABASE);
@@ -160,7 +155,7 @@ public class TopicDAO {
 				suggestedTopics.add(topic);
 			}
 		} catch (DBException | SQLException e) {
-			throw new DBException("Can't get topics from database");
+			throw new DBException(CAN_T_GET_TOPICS_FROM_DATABASE);
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);
 		}
@@ -364,10 +359,9 @@ public class TopicDAO {
 	 * @return
 	 */
 	public List<TopicReportDTO> getTopicReports(Integer topicId) {
-		String sqlQuery = "select q.question_name, q.question_id, q.question_description, count(*) answers_count, "
-				+ " qrt.question_related_topic_id, t.topic_name from Questions q inner join Answers a on a.question_id = q.question_id "
-				+ " inner join QuestionRelatedTopics qrt on q.question_id = qrt.question_id "
-				+ " inner join Topics t on t.topic_id = qrt.topic_id where t.topic_id = ? group by (q.question_id, t.topic_name, qrt.question_related_topic_id);";
+		String sqlQuery = "select q.question_name, q.question_id, q.question_description, "
+				+ "(select count(*) from Answers a where q.question_id = a.question_id) answers_count "
+				+ "from Questions q where q.question_id in (select question_id  from QuestionRelatedTopics where topic_id = ?) order by answers_count desc;";
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
 		List<TopicReportDTO> topicReports = new ArrayList<>();
@@ -381,10 +375,8 @@ public class TopicDAO {
 				Integer questionId = resultSet.getInt("question_id");
 				String questionDescription = resultSet.getString("question_description");
 				Integer answersCount = resultSet.getInt("answers_count");
-				Integer questionRelatedTopicId = resultSet.getInt("question_related_topic_id");
-				String topicName = resultSet.getString(TOPIC_NAME);
-				TopicReportDTO topicReportDTO = new TopicReportDTO(topicId, topicName, questionId, questionName,
-						questionDescription, questionRelatedTopicId, answersCount);
+				TopicReportDTO topicReportDTO = new TopicReportDTO(topicId, questionId, questionName,
+						questionDescription, answersCount);
 				topicReports.add(topicReportDTO);
 			}
 		} catch (SQLException | DBException e) {
@@ -393,7 +385,6 @@ public class TopicDAO {
 			ConnectionUtil.close(prepareStatement, connection);
 		}
 		return topicReports;
-
 	}
 
 	/**
@@ -428,4 +419,83 @@ public class TopicDAO {
 		return userFollowingTopics;
 
 	}
+
+	/**
+	 * 
+	 * @param topicId
+	 * @return Returns followers count for the given topicId.
+	 */
+	public Integer getFollowersCount(Integer topicId) {
+		String sqlQuery = "select count(*) followers_count from Topics t inner join "
+				+ " TopicFollowers tf on tf.topic_id = t.topic_id where t.topic_id = ? group by(t.topic_id);";
+		Connection connection = null;
+		PreparedStatement prepareStatement = null;
+		Integer followersCount = 0;
+		try {
+			connection = ConnectionUtil.getConnection();
+			prepareStatement = connection.prepareStatement(sqlQuery);
+			prepareStatement.setInt(1, topicId);
+			ResultSet resultSet = prepareStatement.executeQuery();
+			if (resultSet.next()) {
+				followersCount = resultSet.getInt("followers_count");
+			}
+		} catch (DBException | SQLException e) {
+			throw new DBException("Can't get topic followers count from database");
+		} finally {
+			ConnectionUtil.close(prepareStatement, connection);
+		}
+		return followersCount;
+	}
+
+	/**
+	 * 
+	 * @return Returns the topics count from Topic followers table.
+	 */
+	public Integer getTopicsCountFromTopicFollowers() {
+		String sqlQuery = "select count(*) topics_count from (select topic_id from TopicFollowers group by(topic_id)) topics;";
+		Connection connection = null;
+		PreparedStatement prepareStatement = null;
+		Integer topicsCount = 0;
+		try {
+			connection = ConnectionUtil.getConnection();
+			prepareStatement = connection.prepareStatement(sqlQuery);
+			ResultSet resultSet = prepareStatement.executeQuery();
+			if (resultSet.next()) {
+				topicsCount = resultSet.getInt("topics_count");
+			}
+		} catch (DBException | SQLException e) {
+			throw new DBException("Can't get topic followers count from database");
+		} finally {
+			ConnectionUtil.close(prepareStatement, connection);
+		}
+		return topicsCount;
+	}
+	
+	/**
+	 * 
+	 * @return Returns the list of topics for new users.
+	 */
+	public List<Topic> getTopicsForNewUsers() {
+		String sqlQuery = "select topic_id, topic_name from Topics limit 16;";
+		Connection connection = null;
+		PreparedStatement prepareStatement = null;
+		List<Topic> userInterestedTopic = new ArrayList<>();
+		try {
+			connection = ConnectionUtil.getConnection();
+			prepareStatement = connection.prepareStatement(sqlQuery);
+			ResultSet resultSet = prepareStatement.executeQuery();
+			while (resultSet.next()) {
+				Integer topicId = resultSet.getInt(TOPIC_ID);
+				String topicName = resultSet.getString(TOPIC_NAME);
+				Topic topic = new Topic(topicId, topicName);
+				userInterestedTopic.add(topic);
+			}
+		} catch (SQLException | DBException e) {
+			throw new DBException(CAN_T_GET_TOPICS_FROM_DATABASE);
+		} finally {
+			ConnectionUtil.close(prepareStatement, connection);
+		}
+		return userInterestedTopic;
+	}
+
 }

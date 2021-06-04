@@ -171,7 +171,12 @@ public class TopicService {
 	public List<Topic> getUserInterestedTopics() {
 		List<Topic> userInterestedTopics;
 		try {
-			userInterestedTopics = topicDAO.getUserInterestedTopics();
+			Integer topicsCountFromTopicFollowers = getTopicsCountFromTopicFollowers();
+			if (topicsCountFromTopicFollowers >= 15) {
+				userInterestedTopics = topicDAO.getUserInterestedTopics();
+			} else {
+				userInterestedTopics = topicDAO.getTopicsForNewUsers();
+			}
 		} catch (DBException e) {
 			throw new ServiceException("Unable to get user interested topics");
 		}
@@ -186,9 +191,8 @@ public class TopicService {
 	 */
 	public void addQuestionRelatedTopics(Integer questionId, String[] questionRelatedTopics) {
 		List<Integer> topicList = new ArrayList<>();
-		TopicService topicService = new TopicService();
 		for (String topicName : questionRelatedTopics) {
-			Topic topic = topicService.getTopicByName(topicName);
+			Topic topic = getTopicByName(topicName);
 			topicList.add(topic.getTopicId());
 		}
 		try {
@@ -215,7 +219,6 @@ public class TopicService {
 			NumberValidator.checkingForNullAndEmpty(topicId);
 			isUserFollowed = topicDAO.followTopic(topicId, userId);
 		} catch (DBException e) {
-			e.printStackTrace();
 			throw new ServiceException("Unable to follow topic");
 		} catch (ValidationException e) {
 			throw new ServiceException(e.getMessage());
@@ -299,6 +302,38 @@ public class TopicService {
 			throw new ServiceException("Unable to get user following topics");
 		}
 		return userFollowingTopics;
+	}
+
+	/**
+	 * 
+	 * @param topicId
+	 * @return Returns the followers count for the given topic.
+	 */
+	public Integer getFollowersCount(Integer topicId) {
+		Integer followersCount = 0;
+		try {
+			NumberValidator.checkingForNullAndEmpty(topicId);
+			followersCount = topicDAO.getFollowersCount(topicId);
+		} catch (DBException e) {
+			throw new ServiceException("Unable to get followers count");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		}
+		return followersCount;
+	}
+
+	/**
+	 * 
+	 * @return Returns the topics count from Topic followers.
+	 */
+	public Integer getTopicsCountFromTopicFollowers() {
+		Integer topicsCount = 0;
+		try {
+			topicsCount = topicDAO.getTopicsCountFromTopicFollowers();
+		} catch (DBException e) {
+			throw new ServiceException("Unable to get followers count");
+		}
+		return topicsCount;
 	}
 
 }

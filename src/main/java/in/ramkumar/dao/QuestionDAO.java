@@ -39,7 +39,6 @@ public class QuestionDAO {
 			prepareStatement.setInt(3, userId);
 			prepareStatement.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
 			throw new DBException("Question can't be added to database");
 		} finally {
 			ConnectionUtil.close(prepareStatement, connection);
@@ -130,7 +129,6 @@ public class QuestionDAO {
 				answersCount = resultSet.getInt(ANSWERS_COUNT);
 			}
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			throw new DBException("Can't get answers count from database");
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);
@@ -148,10 +146,11 @@ public class QuestionDAO {
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
 
-		String insertSQLQuery = "SELECT * FROM Questions WHERE question_name ilike '%" + questionString + "%'";
+		String selectSQLQuery = "SELECT * FROM Questions WHERE question_name = ?";
 		try {
 			connection = ConnectionUtil.getConnection();
-			prepareStatement = connection.prepareStatement(insertSQLQuery);
+			prepareStatement = connection.prepareStatement(selectSQLQuery);
+			prepareStatement.setString(1, questionString);
 			resultSet = prepareStatement.executeQuery();
 			while (resultSet.next()) {
 				String questionName = resultSet.getString(QUESTION_NAME);
@@ -221,7 +220,6 @@ public class QuestionDAO {
 				questionList.add(questionObject);
 			}
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			throw new DBException("Can't get questions from database");
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);

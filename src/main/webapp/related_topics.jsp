@@ -31,7 +31,7 @@
 			List<Topic> relatedTopics = topicService.getRelatedTopics(question.getQuestionName());
 		%>
 		<h3><%=question.getQuestionName()%></h3>
-		<h4>Choose topics that are describe your question</h4>
+		<h4>Choose topics that are describe your question(add atleast 1 topic)</h4>
 		<form action="AddQuestionRelatedTopics" method="post">
 			<div class="mb-3 w-50">
 				<input type="hidden" value="<%=questionId%>" readonly name="questionId">
@@ -55,6 +55,7 @@
 				</datalist>
 			</div>
 			<div id="userSelectedTopics"></div>
+			<% if(relatedTopics.size() > 0) {%>
 			<h4>Are these topics describe your question?</h4>
 			<%
 			for (Topic topic : relatedTopics) {
@@ -71,11 +72,11 @@
 				localStorage.setItem("SuggestedTopics", JSON.stringify(suggestedTopics));}
 				</script>
 			</div>
-			<%
+			<%}
 			}
 			}
 			%>
-			<button type="submit" class="btn btn-primary" id="addQuestionRelatedTopicsBtn">Submit</button>
+			<button type="submit" class="btn btn-primary" id="addQuestionRelatedTopicsBtn" disabled>Submit</button>
 		</form>
 	</main>
 	<script>
@@ -88,7 +89,7 @@
 			for(let topic of res){
 				allTopics.push(topic.topicName);
 			}
-			let suggestedTopics = JSON.parse(localStorage.getItem("SuggestedTopics"));
+			let suggestedTopics = JSON.parse(localStorage.getItem("SuggestedTopics")) || [];
 			let userTopics = JSON.parse(localStorage.getItem("UserTopics")) || [];
 			let topicValue = document.getElementById("relatedTopicList").value;
 			let userSelectedTopics = document.getElementById("userSelectedTopics");
@@ -98,7 +99,7 @@
 			localStorage.setItem("UserTopics", JSON.stringify(userTopics));
 			let content = "";
 			for(let topic of userTopics){
-				content += "<div class=\"form-check my-3\"> <input type=\"checkbox\" onchange=\"check()\" checked name=\"questionRelatedTopics\" id=\""+topic+
+				content += "<div class=\"form-check my-3\"> <input type=\"checkbox\" value=\""+topic+"\"onchange=\"check()\" checked name=\"questionRelatedTopics\" id=\""+topic+
 				"\"><label for=\""+topic+"\" class=\"form-check-label ml-5\">"
 						+ topic + "</label></div>";
 			}
@@ -108,17 +109,21 @@
 			if(checkboxes.length >= 10){
 				document.getElementById("addMoreTopics").style.display = "none";
 			}
-			});
+			if (content.length > 0) {
+				document.getElementById("addQuestionRelatedTopicsBtn").disabled = false;								
+			}
+			});			
 		}
 		function check() {
 			var checkboxes = document
 					.querySelectorAll('input[type="checkbox"]:checked');
-			if (checkboxes.length >= 1) {
-			document.getElementById("addQuestionRelatedTopicsBtn").disabled = false;				
-			} else {
+			if (checkboxes.length < 1) {
 				document.getElementById("addQuestionRelatedTopicsBtn").disabled = true;				
+			} else {
+				document.getElementById("addQuestionRelatedTopicsBtn").disabled = false;				
 			}
 		}
+		check();
 	</script>
 </body>
 </html>

@@ -23,6 +23,7 @@
 		List<TopicReportDTO> topicReports = (List<TopicReportDTO>) request.getAttribute("topicReports");
 		TopicService topicService = new TopicService();
 		Topic topicObject = topicService.getTopicById(topicId);
+		Integer followersCount = topicService.getFollowersCount(topicId);
 		boolean isUserFollowing = topicService.isUserFollowingTopic(topicId, userId);
 	%>
 	<jsp:include page="header.jsp"></jsp:include>
@@ -32,7 +33,8 @@
 			<div class="row">
 				<div class="col">
 					<%
-					List<Topic> topicList = topicService.getUserFollowingTopics(userId);					for (Topic topic : topicList) {
+					List<Topic> topicList = topicService.getUserFollowingTopics(userId);
+					for (Topic topic : topicList) {
 					%>
 					<div class="card my-1">
 						<div class="card-body">
@@ -53,7 +55,7 @@
 							<div class="card-body">
 								<h3><%=topicObject.getTopicName()%>
 									<span class="text-muted" style="font-size: 30px">.</span> <span
-										class="text-muted" style="font-size: 16px"><%=topicObject.getFollowersCount()%>
+										class="text-muted" style="font-size: 16px"><%=followersCount%>
 										Followers</span>
 								</h3>
 								<div id="userFollowBtns">
