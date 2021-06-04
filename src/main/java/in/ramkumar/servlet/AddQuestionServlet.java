@@ -38,7 +38,7 @@ public class AddQuestionServlet extends HttpServlet {
 		try {
 			Question getQuestionObject = questionService.addQuestion(addQuestionObject, userId);
 			if (getQuestionObject != null) {
-				response.sendRedirect("question_list.jsp?question="+question);				
+				response.sendRedirect("ListQuestionServlet?questionSearch="+question);				
 			}else {
 				Question questionObject = questionService.getQuestion(question);
 				response.sendRedirect("related_topics.jsp?infoMessage= Question Added&questionId="+questionObject.getQuestionId());				

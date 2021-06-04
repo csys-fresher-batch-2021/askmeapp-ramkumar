@@ -34,7 +34,7 @@ public class QuestionService {
 			if (description != null && !description.trim().equals("")) {
 				QuestionValidator.validateDescription(question);
 				questionDAO.addQuestion(question, userId);
-			} else {
+			} else if(questionObject == null){
 				question.setDescription(null);
 				questionDAO.addQuestion(question, userId);
 			}

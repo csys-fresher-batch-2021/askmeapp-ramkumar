@@ -21,12 +21,13 @@
 	String role = (String) session.getAttribute("Logged_In_UserRole");
 	if (role == null) {
 		response.sendRedirect("login.jsp");
-	} else{
-	TopicService topicService = new TopicService();
-	List<Topic> userInterestedTopics = topicService.getUserInterestedTopics();
+	} else {
+		TopicService topicService = new TopicService();
+		Integer topicsCountFromFollowers = topicService.getTopicsCountFromTopicFollowers();
+		List<Topic> userInterestedTopics = topicService.getUserInterestedTopics();
 	%>
 	<main class="container">
-	<jsp:include page="message.jsp"></jsp:include>
+		<jsp:include page="message.jsp"></jsp:include>
 		<div class="d-flex justify-content-center align-items-center my-5">
 			<div class="card w-75">
 				<form action="AddUserInterstedTopicsServlet" method="post">
@@ -38,12 +39,17 @@
 						%>
 						<div class="form-check my-3" onchange=check()>
 							<input class="form-check-input" type="checkbox"
-								value="<%=topic.getTopicName()%>" name="userInterestedTopics" id="<%=topic.getTopicId()%>">
-							<label class="form-check-label ml-5"
-								for="<%=topic.getTopicId()%>"> <%=topic.getTopicName()%><span
-								class="text-muted"> (<%=topic.getFollowersCount()%>
+								value="<%=topic.getTopicName()%>" name="userInterestedTopics"
+								id="<%=topic.getTopicId()%>"> <label
+								class="form-check-label ml-5" for="<%=topic.getTopicId()%>">
+								<%=topic.getTopicName()%> <%
+ 								if (topicsCountFromFollowers >= 15) {%>
+								<span class="text-muted"> (<%=topic.getFollowersCount()%>
 									Followers)
 							</span>
+								<%
+								}
+								%>
 							</label>
 						</div>
 						<%
@@ -58,7 +64,9 @@
 			</div>
 		</div>
 	</main>
-	<%} %>
+	<%
+	}
+	%>
 	<script>
 		function check() {
 			var checkboxes = document

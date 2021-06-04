@@ -2,21 +2,17 @@ package in.ramkumar.dto;
 
 public class TopicReportDTO {
 	private Integer topicId;
-	private String topicName;
 	private Integer questionId;
 	private String questionName;
 	private String questionDescription;
-	private Integer questionRelatedTopicId;
 	private Integer answersCount;
 
-	public TopicReportDTO(Integer topicId, String topicName, Integer questionId, String questionName,
-			String questionDescription, Integer questionRelatedTopicId, Integer answersCount) {
-		this.topicName = topicName;
+	public TopicReportDTO(Integer topicId, Integer questionId, String questionName,
+			String questionDescription, Integer answersCount) {
 		this.topicId = topicId;
 		this.questionId = questionId;
 		this.questionName = questionName;
 		this.questionDescription = questionDescription;
-		this.questionRelatedTopicId = questionRelatedTopicId;
 		this.answersCount = answersCount;
 	}
 
@@ -37,22 +33,6 @@ public class TopicReportDTO {
 	 */
 	public void setTopicId(Integer topicId) {
 		this.topicId = topicId;
-	}
-
-	/**
-	 * 
-	 * @return Returns topicName
-	 */
-	public String getTopicName() {
-		return topicName;
-	}
-
-	/**
-	 * Sets the topicName
-	 * @param topicName
-	 */
-	public void setTopicName(String topicName) {
-		this.topicName = topicName;
 	}
 	
 	/**
@@ -106,23 +86,6 @@ public class TopicReportDTO {
 
 	/**
 	 * 
-	 * @return Returns the question related topic id
-	 */
-	public Integer getQuestionRelatedTopicId() {
-		return questionRelatedTopicId;
-	}
-
-	/**
-	 * sets the question related topic id
-	 * 
-	 * @param questionRelatedTopicId
-	 */
-	public void setQuestionRelatedTopicId(Integer questionRelatedTopicId) {
-		this.questionRelatedTopicId = questionRelatedTopicId;
-	}
-
-	/**
-	 * 
 	 * @return Returns the answers count
 	 */
 	public Integer getAnswersCount() {
@@ -143,8 +106,8 @@ public class TopicReportDTO {
 	 */
 	@Override
 	public String toString() {
-		return "TopicReportDTO [topicId=" + topicId + ", topicName=" + topicName + ", questionId=" + questionId
+		return "TopicReportDTO [topicId=" + topicId + ", questionId=" + questionId
 				+ ", questionName=" + questionName + ", questionDescription=" + questionDescription
-				+ ", questionRelatedTopicId=" + questionRelatedTopicId + ", answersCount=" + answersCount + "]";
+				+ ", answersCount=" + answersCount + "]";
 	}
 }
