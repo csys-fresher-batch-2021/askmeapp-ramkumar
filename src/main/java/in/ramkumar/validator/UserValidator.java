@@ -1,7 +1,7 @@
 package in.ramkumar.validator;
 
-import static in.ramkumar.util.StringUtil.*;
-import static in.ramkumar.validator.StringValidator.*;
+import static in.ramkumar.util.StringUtil.getLength;
+import static in.ramkumar.validator.StringValidator.checkingForNullAndEmpty;
 
 import java.util.regex.Pattern;
 

@@ -74,13 +74,14 @@ String role = (String) session.getAttribute("Logged_In_UserRole");
 						</ul></li>
 					<li class="nav-item ml-5"><a class="nav-link"
 						href="LogoutServlet">Logout</a> 
-					<% } else if (role.equals("Admin") && userName == null) {%>
+					<% } else if (role.equals("Admin")) {%>
 					<li class="nav-item"><a class="nav-link ml-5" href="user_list.jsp">List
 							Users</a></li>
 					<li class="nav-item"><a class="nav-link ml-5" href="topic_list.jsp">List
 							Topics</a></li>
 					<li class="nav-item"><a class="nav-link ml-5" href="LogoutServlet">Logout</a>
 					</li>
+					<li class="nav-item"><a class="nav-link ml-5" href="#"><strong>Admin: <%=userName %></strong> </a></li>
 					<%
 					}
 					%>

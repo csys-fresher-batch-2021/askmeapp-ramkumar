@@ -27,6 +27,18 @@
 					type="password" name="password" id="password" required
 					placeholder="Password" />
 			</div>
+			<div class="row mb-3">
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="role"
+						value="User" id="user" checked /> <label
+						class="form-check-label ml-4" for="user"> User </label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" value="Admin"
+						name="role" id="admin" /> <label class="form-check-label ml-4"
+						for="admin"> Admin </label>
+				</div>
+			</div>
 			<button type="submit" class="btn btn-primary">Signup</button>
 			<a href="login.jsp" class="btn btn-primary">Login</a>
 		</form>

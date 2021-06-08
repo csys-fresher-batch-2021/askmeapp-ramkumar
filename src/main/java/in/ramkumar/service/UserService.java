@@ -15,7 +15,6 @@ import static in.ramkumar.validator.UserValidator.*;
 
 public class UserService {
 
-	private static final String INVALID_ADMIN = "Invalid admin";
 	private static final String UNABLE_TO_REGISTER_USER = "Unable to register user";
 	private UserDAO userDAO = new UserDAO();
 
@@ -53,6 +52,40 @@ public class UserService {
 			throw new ServiceException(e.getMessage());
 		} catch (DBException e) {
 			throw new ServiceException(UNABLE_TO_REGISTER_USER);
+		}
+		return user == null;
+	}
+
+	/**
+	 * Admin Registration. This validates the admin name, password, email given by
+	 * the admin. If it is a valid admin then it will be added to the adminList.
+	 * 
+	 * @param userObject
+	 */
+	public boolean registerAdmin(User userObject) {
+		String name = userObject.getName();
+		String email = userObject.getEmail();
+		String password = userObject.getPassword();
+
+		User user = null;
+		try {
+			user = getAdminByEmail(email);
+			if (user != null) {
+				throw new ServiceException("Sorry Email already exists");
+			}
+		} catch (ServiceException e) {
+			throw new ServiceException(e.getMessage());
+		}
+
+		try {
+			validateName(name);
+			validateEmail(email);
+			validatePassword(password);
+			userDAO.addAdmin(userObject);
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		} catch (DBException e) {
+			throw new ServiceException("Unable to register admin");
 		}
 		return user == null;
 	}
@@ -119,7 +152,7 @@ public class UserService {
 	}
 
 	/**
-	 * User Login. This method checks the user exist in the userList. If the user
+	 * User Login. This method checks the user exist in the database. If the user
 	 * exist, user object index will be return by getUserIndexWithEmail(email). With
 	 * user index we can get the user object reference. And then email and password
 	 * is verified.
@@ -143,10 +176,7 @@ public class UserService {
 		if (user == null) {
 			throw new ServiceException("No user with email " + email);
 		}
-		/*
-		 * If the user email, password is not null and empty, then get the user index
-		 * from the userList.
-		 */
+
 		if (user.getEmail().equals(email.toLowerCase()) && user.getPassword().equals(password)) {
 			validUser = true;
 		} else {
@@ -156,26 +186,33 @@ public class UserService {
 	}
 
 	/**
-	 * Admin Login. This methods checks the email is 'admin@gmail.com' and password
-	 * is 'admin'
-	 * 
 	 * @param email
 	 * @param password
 	 * @return Returns true if the user email and password given by the admin is
 	 *         valid.
 	 */
 	public boolean adminLogin(String email, String password) {
-		checkingForNullAndEmpty(email);
-		checkingForNullAndEmpty(password);
-
 		boolean validAdmin = false;
+		User admin = null;
+		try {
+			checkingForNullAndEmpty(email);
+			checkingForNullAndEmpty(password);
+			admin = getAdminByEmail(email);
+		} catch (ValidationException | ServiceException e) {
+			throw new ServiceException(e.getMessage());
+		}
 
-		if (email.equals("admin@gmail.com") && password.equals("admin")) {
+		if (admin == null) {
+			throw new ServiceException("No admin with email " + email);
+		}
+
+		if (admin.getEmail().equals(email.toLowerCase()) && admin.getPassword().equals(password)) {
 			validAdmin = true;
 		} else {
-			throw new ServiceException(INVALID_ADMIN);
+			throw new ServiceException("Incorrect email or password");
 		}
 		return validAdmin;
+
 	}
 
 	/**
@@ -248,7 +285,7 @@ public class UserService {
 			User newUser = getUserByEmail(newEmail);
 			if (user != null && !user.getEmail().equalsIgnoreCase(newEmail) && newUser == null) {
 				userDAO.updateUserEmail(userId, newEmail);
-			} else if(user != null && !user.getEmail().equalsIgnoreCase(newEmail) && newUser != null) {
+			} else if (user != null && !user.getEmail().equalsIgnoreCase(newEmail) && newUser != null) {
 				throw new ServiceException("Sorry email already exists");
 			}
 		} catch (ServiceException | ValidationException e) {
@@ -257,6 +294,40 @@ public class UserService {
 			throw new ServiceException("Unable to change email");
 		}
 		return user != null;
+	}
+
+	/**
+	 * @param email
+	 * @return Returns the User object for the given email.
+	 */
+	public User getAdminByEmail(String email) {
+		User user = null;
+		try {
+			StringValidator.checkingForNullAndEmpty(email);
+			user = userDAO.getAdminByEmail(email.toLowerCase());
+		} catch (DBException e) {
+			throw new ServiceException("Unable to get admin");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		}
+		return user;
+	}
+
+	/**
+	 * @param userId
+	 * @return Returns the User object for the given userId.
+	 */
+	public User getAdminById(Integer userId) {
+		User user = null;
+		try {
+			NumberValidator.checkingForNullAndEmpty(userId);
+			user = userDAO.getAdminById(userId);
+		} catch (DBException e) {
+			throw new ServiceException("Unable to get admin");
+		} catch (ValidationException e) {
+			throw new ServiceException(e.getMessage());
+		}
+		return user;
 	}
 
 }

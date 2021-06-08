@@ -45,11 +45,14 @@ public class LoginServlet extends HttpServlet {
 			}
 		} else if(role.equals("Admin")) {
 			try {
+				User user = userService.getAdminByEmail(email);
 				boolean validAdmin = userService.adminLogin(email, password);
 				if (validAdmin) {
 					HttpSession session = request.getSession();
+					session.setAttribute("Logged_In_UserName", user.getName());
 					session.setAttribute("Logged_In_UserRole", role);
 					session.setAttribute("Logged_In_AdminEmail", email);
+					session.setAttribute("Logged_In_UserId", user.getUserId());
 					response.sendRedirect("topic_list.jsp?infoMessage=Login successful");
 				}
 			} catch (ServiceException e) {

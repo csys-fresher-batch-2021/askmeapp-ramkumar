@@ -1,7 +1,7 @@
 package in.ramkumar.validator;
 
 import in.ramkumar.model.Question;
-import static in.ramkumar.util.StringUtil.*;
+import static in.ramkumar.util.StringUtil.getLength;
 
 import in.ramkumar.exception.UtilException;
 import in.ramkumar.exception.ValidationException;

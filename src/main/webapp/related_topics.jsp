@@ -30,54 +30,73 @@
 			List<Topic> allTopics = topicService.getAllTopics();
 			List<Topic> relatedTopics = topicService.getRelatedTopics(question.getQuestionName());
 		%>
-		<h3><%=question.getQuestionName()%></h3>
-		<h4>Choose topics that are describe your question(add atleast 1 topic)</h4>
-		<form action="AddQuestionRelatedTopics" method="post">
-			<div class="mb-3 w-50">
-				<input type="hidden" value="<%=questionId%>" readonly name="questionId">
-				<label for="relatedTopicList" class="form-label"> You can
-					add some more topics that are also describe your question</label>
-				<div class="row" id="addMoreTopics">
-					<input onchange="check()" class="form-control" list="relatedTopics"
-						id="relatedTopicList" placeholder="Search topics here...">
-					<button type="button" class="btn btn-primary"
-						onclick="addTopic(event)">Add</button>
-				</div>
-				<datalist id="relatedTopics">
-					<%
-					for (Topic topic : allTopics) {
-					%>
-					<option value="<%=topic.getTopicName()%>">
+		<div class="d-flex justify-content-center align-items-center my-5">
+			<div class="card w-75">
+				<form action="AddQuestionRelatedTopics" method="post">
+					<div class="card-header text-center">
+						<h3><%=question.getQuestionName()%></h3>
+					</div>
+					<div class="card-body">
+						<h4>Choose topics that are describe your question(add atleast
+							1 topic)</h4>
+						<div class="mb-3">
+							<input type="hidden" value="<%=questionId%>" readonly
+								name="questionId"> <label for="relatedTopicList"
+								class="form-label"> You can add some more topics that
+								are also describe your question</label>
+							<div class="row w-75 ml-5" id="addMoreTopics">
+								<input onchange="check()" class="form-control"
+									list="relatedTopics" id="relatedTopicList"
+									placeholder="Search topics here...">
+								<button type="button" class="btn btn-primary"
+									onclick="addTopic(event)">Add</button>
+							</div>
+							<datalist id="relatedTopics">
+								<%
+								for (Topic topic : allTopics) {
+								%>
+								<option value="<%=topic.getTopicName()%>">
+									<%
+									}
+									%>
+								
+							</datalist>
+						</div>
+						<div id="userSelectedTopics"></div>
 						<%
-						}
+						if (relatedTopics.size() > 0) {
 						%>
-					
-				</datalist>
-			</div>
-			<div id="userSelectedTopics"></div>
-			<% if(relatedTopics.size() > 0) {%>
-			<h4>Are these topics describe your question?</h4>
-			<%
-			for (Topic topic : relatedTopics) {
-			%>
-			<div class="form-check my-3">
-				<input class="form-check-input" type="checkbox" 
-					onchange="check()" value="<%=topic.getTopicName()%>" id="<%=topic.getTopicName()%>"
-					checked name="questionRelatedTopics"> <label
-					class="form-check-label ml-5" for="<%=topic.getTopicName()%>">
-					<%=topic.getTopicName()%></label>
-				<script>{
+						<h4>Are these topics describe your question?</h4>
+						<%
+						for (Topic topic : relatedTopics) {
+						%>
+						<div class="form-check my-3">
+							<input class="form-check-input" type="checkbox"
+								onchange="check()" value="<%=topic.getTopicName()%>"
+								id="<%=topic.getTopicName()%>" checked
+								name="questionRelatedTopics"> <label
+								class="form-check-label ml-5" for="<%=topic.getTopicName()%>">
+								<%=topic.getTopicName()%></label>
+							<script>{
 				let suggestedTopics = JSON.parse(localStorage.getItem("SuggestedTopics")) || [];
 				suggestedTopics.push("<%=topic.getTopicName()%>");
 				localStorage.setItem("SuggestedTopics", JSON.stringify(suggestedTopics));}
 				</script>
+						</div>
+						<%
+						}
+						}
+						}
+						%>
+
+					</div>
+					<div class="card-footer text-center">
+						<button type="submit" class="btn btn-primary"
+							id="addQuestionRelatedTopicsBtn" disabled>Submit</button>
+					</div>
+				</form>
 			</div>
-			<%}
-			}
-			}
-			%>
-			<button type="submit" class="btn btn-primary" id="addQuestionRelatedTopicsBtn" disabled>Submit</button>
-		</form>
+		</div>
 	</main>
 	<script>
 		function addTopic(event) {

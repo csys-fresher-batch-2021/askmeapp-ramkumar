@@ -18,6 +18,7 @@ public class UserDAO {
 	private static final String USER_EMAIL = "user_email";
 	private static final String USER_NAME = "user_name";
 	private static final String USER_ID = "user_id";
+	private static final String CAN_T_GET_ADMIN_FROM_DATABASE = null;
 
 	/**
 	 * This method adds user Users table.
@@ -45,6 +46,31 @@ public class UserDAO {
 	}
 
 	/**
+	 * This method adds admin Employees table.
+	 * 
+	 * @param user
+	 */
+	public void addAdmin(User user) {
+		String insertSQLQuery = "INSERT INTO Employees (employee_name, employee_email, employee_password) VALUES (?, ?, ?)";
+
+		Connection connection = null;
+		PreparedStatement prepareStatement = null;
+
+		try {
+			connection = ConnectionUtil.getConnection();
+			prepareStatement = connection.prepareStatement(insertSQLQuery);
+			prepareStatement.setString(1, user.getName());
+			prepareStatement.setString(2, user.getEmail());
+			prepareStatement.setString(3, user.getPassword());
+			prepareStatement.executeUpdate();
+		} catch (SQLException | DBException e) {
+			throw new DBException("Can't add admin to the database");
+		} finally {
+			ConnectionUtil.close(prepareStatement, connection);
+		}
+	}
+
+	/**
 	 * This method gets all user from the database.
 	 * 
 	 * @return Returns the list of users
@@ -55,7 +81,7 @@ public class UserDAO {
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
 
-		String selectSQLQuery = "SELECT * FROM Users";
+		String selectSQLQuery = "SELECT user_id, user_name, user_email, user_password FROM Users";
 
 		try {
 			connection = ConnectionUtil.getConnection();
@@ -83,7 +109,7 @@ public class UserDAO {
 	 * @return Returns the User object for the given email.
 	 */
 	public User getUserByEmail(String emailString) {
-		String selectSQLQuery = "SELECT * FROM Users WHERE user_email = ?";
+		String selectSQLQuery = "SELECT user_id, user_name, user_email, user_password FROM Users WHERE user_email = ?";
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
@@ -102,7 +128,6 @@ public class UserDAO {
 				user = new User(userId, name, email, password);
 			}
 		} catch (SQLException | DBException e) {
-			e.printStackTrace();
 			throw new DBException(CAN_T_GET_USER_FROM_DATABASE);
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);
@@ -115,7 +140,7 @@ public class UserDAO {
 	 * @return Returns the User object for the given userId.
 	 */
 	public User getUserById(Integer userId) {
-		String selectSQLQuery = "SELECT * FROM Users WHERE user_id = ?";
+		String selectSQLQuery = "SELECT user_name, user_email, user_password  FROM Users WHERE user_id = ?";
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
@@ -133,7 +158,6 @@ public class UserDAO {
 				user = new User(userId, name, email, password);
 			}
 		} catch (SQLException | DBException e) {
-			e.printStackTrace();
 			throw new DBException(CAN_T_GET_USER_FROM_DATABASE);
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);
@@ -206,11 +230,71 @@ public class UserDAO {
 			prepareStatement.setInt(2, userId);
 			prepareStatement.executeUpdate();
 		} catch (SQLException | DBException e) {
-			e.printStackTrace();
 			throw new DBException("Can't update user email in database");
 		} finally {
 			ConnectionUtil.close(prepareStatement, connection);
 		}
+	}
+
+	/**
+	 * @param emailString
+	 * @return Returns the User object for the given email.
+	 */
+	public User getAdminByEmail(String emailString) {
+		String selectSQLQuery = "SELECT employee_id, employee_name, employee_email, employee_password FROM Employees WHERE employee_email = ?";
+		Connection connection = null;
+		PreparedStatement prepareStatement = null;
+		ResultSet resultSet = null;
+		User user = null;
+
+		try {
+			connection = ConnectionUtil.getConnection();
+			prepareStatement = connection.prepareStatement(selectSQLQuery);
+			prepareStatement.setString(1, emailString);
+			resultSet = prepareStatement.executeQuery();
+			if (resultSet.next()) {
+				Integer userId = resultSet.getInt("employee_id");
+				String name = resultSet.getString("employee_name");
+				String email = resultSet.getString("employee_email");
+				String password = resultSet.getString("employee_password");
+				user = new User(userId, name, email, password);
+			}
+		} catch (SQLException | DBException e) {
+			throw new DBException(CAN_T_GET_ADMIN_FROM_DATABASE);
+		} finally {
+			ConnectionUtil.close(resultSet, prepareStatement, connection);
+		}
+		return user;
+	}
+
+	/**
+	 * @param userId
+	 * @return Returns the User object for the given userId.
+	 */
+	public User getAdminById(Integer userId) {
+		String selectSQLQuery = "SELECT employee_name, employee_email, employee_password FROM Employees WHERE user_id = ?";
+		Connection connection = null;
+		PreparedStatement prepareStatement = null;
+		ResultSet resultSet = null;
+		User user = null;
+
+		try {
+			connection = ConnectionUtil.getConnection();
+			prepareStatement = connection.prepareStatement(selectSQLQuery);
+			prepareStatement.setInt(1, userId);
+			resultSet = prepareStatement.executeQuery();
+			if (resultSet.next()) {
+				String name = resultSet.getString("employee_name");
+				String email = resultSet.getString("employee_email");
+				String password = resultSet.getString("employee_password");
+				user = new User(userId, name, email, password);
+			}
+		} catch (SQLException | DBException e) {
+			throw new DBException(CAN_T_GET_ADMIN_FROM_DATABASE);
+		} finally {
+			ConnectionUtil.close(resultSet, prepareStatement, connection);
+		}
+		return user;
 	}
 
 }
