@@ -26,7 +26,7 @@ public class TopicDAO {
 	 * @param topic
 	 */
 	public void addTopic(Topic topic) {
-		String insertSQLQuery = "INSERT INTO Topics (topic_name, topic_words) VALUES (?, to_tsvector('"
+		String insertSQLQuery = "INSERT INTO Topics (topic_name, topic_words) VALUES (?, TO_TSVECTOR('"
 				+ topic.getTopicName() + "'))";
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
@@ -80,7 +80,7 @@ public class TopicDAO {
 	 */
 	public Topic getTopicById(Integer topicId) {
 		Topic topic = null;
-		String selectSQLQuery = "select topic_id, topic_name from Topics where topic_id = ?";
+		String selectSQLQuery = "SELECT topic_id, topic_name FROM Topics WHERE topic_id = ?";
 
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
@@ -109,7 +109,7 @@ public class TopicDAO {
 	 */
 	public Topic getTopicByName(String topicName) {
 		Topic topic = null;
-		String selectSQLQuery = "select topic_id, topic_name from Topics where topic_name ilike ?";
+		String selectSQLQuery = "SELECT topic_id, topic_name FROM Topics WHERE topic_name ILIKE ?";
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
@@ -141,9 +141,9 @@ public class TopicDAO {
 		ResultSet resultSet = null;
 		List<Topic> suggestedTopics = new ArrayList<>();
 		String searchingKeywords = textSearchQuery.replace("'", "").replace("&", "|");
-		String sql = "select topic_name, topic_id, ts_rank(Topics.topic_words, to_tsquery('" + searchingKeywords
-				+ "')) as rank from Topics where Topics.topic_words @@ to_tsquery('" + searchingKeywords
-				+ "') order by rank desc limit 4;";
+		String sql = "SELECT topic_name, topic_id, TS_RANK(Topics.topic_words, TO_TSQUERY('" + searchingKeywords
+				+ "')) AS rank FROM Topics where Topics.topic_words @@ TO_TSQUERY('" + searchingKeywords
+				+ "') ORDER BY rank DESC LIMIT 4;";
 		try {
 			connection = ConnectionUtil.getConnection();
 			prepareStatement = connection.prepareStatement(sql);
@@ -192,9 +192,9 @@ public class TopicDAO {
 	 * @return Returns the list of topics that are most followed by followers.
 	 */
 	public List<Topic> getUserInterestedTopics() {
-		String sqlQuery = "select topic_name,  count(topic_follower_id) as topic_followers_count, Topics.topic_id from Topics"
-				+ " inner join TopicFollowers on Topics.topic_id = TopicFollowers.topic_id"
-				+ " group by Topics.topic_id order by topic_followers_count desc limit 15;";
+		String sqlQuery = "SELECT topic_name,  COUNT(topic_follower_id) AS topic_followers_count, Topics.topic_id FROM Topics"
+				+ " INNER JOIN TopicFollowers ON Topics.topic_id = TopicFollowers.topic_id"
+				+ " GROUP BY Topics.topic_id ORDER by topic_followers_count DESC LIMIT 15;";
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
 		List<Topic> userInterestedTopic = new ArrayList<>();

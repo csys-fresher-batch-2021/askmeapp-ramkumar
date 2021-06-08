@@ -22,7 +22,7 @@ public class AnswerDAO {
 	 */
 	public void addAnswer(Integer questionId, Integer userId, Answer answer) {
 
-		String insertSQLQuery = "INSERT INTO Answers (answer_name, question_id, user_id, answer_words) VALUES (?, ?, ?, to_tsvector('"
+		String insertSQLQuery = "INSERT INTO Answers (answer_name, question_id, user_id, answer_words) VALUES (?, ?, ?, TO_TSVECTOR('"
 				+ answer.getAnswerName() + "'))";
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
@@ -49,7 +49,7 @@ public class AnswerDAO {
 	 */
 	public List<Answer> getAllAnswers(int questionId) {
 		List<Answer> answerList = new ArrayList<>();
-		String selectSQLQuery = "SELECT * FROM Answers where question_id = ?";
+		String selectSQLQuery = "SELECT answer_id, answer_name, user_id  FROM Answers WHERE question_id = ?";
 
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
@@ -67,7 +67,6 @@ public class AnswerDAO {
 				answerList.add(answer);
 			}
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			throw new DBException("Can't get answers from database");
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);

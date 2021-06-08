@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@page import="in.ramkumar.model.Question"%>
+<%@page import="in.ramkumar.service.QuestionService"%>
 <%@page import="in.ramkumar.model.User"%>
 <%@page import="in.ramkumar.service.UserService"%>
 <%@page import="in.ramkumar.model.Topic"%>
@@ -16,8 +18,13 @@
 	} else {
 		String questionIdString = request.getParameter("questionId");
 		Integer questionId = null;
+		QuestionService questionService = new QuestionService();
+		Integer answersCount = 0;
+		Question question = null;
 		if (questionIdString != null) {
 			questionId = Integer.parseInt(questionIdString);
+			question = questionService.getQuestionById(questionId);
+			answersCount = questionService.getAnswersCountByQuestionId(questionId);
 		}
 		Integer userId = (Integer) session.getAttribute("Logged_In_UserId");
 		UserService userService = new UserService();
@@ -47,7 +54,29 @@
 					}
 					%>
 				</div>
-				<div class="col-10"></div>
+				<div class="col-10">
+					<%
+					if (questionId != null) {
+					%>
+					<div class="card my-1">
+						<div class="card-body">
+						<div class="row ml-1 text-muted" style="font-size: 16px;">Your Question</div>
+							<div class="row ml-1 mt-1">
+								<a
+									href="ListAnswerServlet?questionId=<%=question.getQuestionId()%>"
+									class="link-dark" style="font-size: 18px; font-weight: bold"><%=question.getQuestionName()%></a>
+							</div>
+							<div class="row ml-1 mt-1">
+								<a
+									href="ListAnswerServlet?questionId=<%=question.getQuestionId()%>"
+									class="link-dark"><%=question.getAnswersCount()%> Answers</a>
+							</div>
+						</div>
+					</div>
+					<%
+					}
+					%>
+				</div>
 			</div>
 		</div>
 	</main>

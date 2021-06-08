@@ -1,3 +1,12 @@
+CREATE TABLE Employees
+(
+	employee_id BIGSERIAL PRIMARY KEY,
+	employee_name VARCHAR(20) NOT NULL,
+	employee_email VARCHAR(320) NOT NULL UNIQUE, 
+	employee_password VARCHAR(30) NOT NULL
+);
+
+
 CREATE TABLE Users
 (
 	user_id BIGSERIAL PRIMARY KEY, 

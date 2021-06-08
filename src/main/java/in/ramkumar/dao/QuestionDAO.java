@@ -27,7 +27,7 @@ public class QuestionDAO {
 	 */
 	public void addQuestion(Question question, Integer userId) {
 
-		String insertSQLQuery = "INSERT INTO Questions (question_name, question_description, user_id, question_words) VALUES (?, ?, ?, to_tsvector('"
+		String insertSQLQuery = "INSERT INTO Questions (question_name, question_description, user_id, question_words) VALUES (?, ?, ?, TO_TSVECTOR('"
 				+ question.getQuestionName() + "'))";
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
@@ -55,7 +55,7 @@ public class QuestionDAO {
 		Connection connection = null;
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
-		String selectSQLQuery = "SELECT * FROM Questions";
+		String selectSQLQuery = "SELECT question_name, question_description, question_id FROM Questions";
 
 		try {
 			connection = ConnectionUtil.getConnection();
@@ -69,7 +69,6 @@ public class QuestionDAO {
 				questionList.add(question);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
 			throw new DBException("Can't get questions from database");
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);
@@ -87,7 +86,7 @@ public class QuestionDAO {
 		Question question = null;
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
-		String insertSQLQuery = "SELECT * FROM Questions WHERE question_id = ?";
+		String insertSQLQuery = "SELECT question_name, question_description, user_id  FROM Questions WHERE question_id = ?";
 		Integer answersCounts = getAnswersCountByQuestionId(questionId);
 		try {
 			connection = ConnectionUtil.getConnection();
@@ -102,7 +101,6 @@ public class QuestionDAO {
 				question = new Question(questionId, questionName, description, userId, answersCounts);
 			}
 		} catch (DBException | SQLException e) {
-			e.printStackTrace();
 			throw new DBException(CAN_T_GET_QUESTION_FROM_DATABASE);
 		} finally {
 			ConnectionUtil.close(resultSet, prepareStatement, connection);
@@ -119,7 +117,7 @@ public class QuestionDAO {
 		Integer answersCount = 0;
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
-		String answersCountSQLQuery = "SELECT count(*) as answers_count from Answers where question_id = ?";
+		String answersCountSQLQuery = "SELECT COUNT(*) AS answers_count FROM Answers WHERE question_id = ?";
 		try {
 			connection = ConnectionUtil.getConnection();
 			prepareStatement = connection.prepareStatement(answersCountSQLQuery);
@@ -146,7 +144,7 @@ public class QuestionDAO {
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
 
-		String selectSQLQuery = "SELECT * FROM Questions WHERE question_name = ?";
+		String selectSQLQuery = "SELECT question_name, question_description, question_id  FROM Questions WHERE question_name ilike ?";
 		try {
 			connection = ConnectionUtil.getConnection();
 			prepareStatement = connection.prepareStatement(selectSQLQuery);
@@ -176,7 +174,7 @@ public class QuestionDAO {
 		ResultSet resultSet = null;
 		String textSearchQuery = "";
 
-		String sql = "select plainto_tsquery('" + keywords + "')";
+		String sql = "SELECT PLAINTO_TSQUERY('" + keywords + "')";
 
 		try {
 			connection = ConnectionUtil.getConnection();
@@ -205,9 +203,9 @@ public class QuestionDAO {
 		ResultSet resultSet = null;
 		List<Question> questionList = new ArrayList<>();
 		String searchingKeywords = textSearchQuery.replace("'", "").replace("&", "|");
-		String sql = "select question_name, question_id, question_description, ts_rank(Questions.question_words, to_tsquery('"
-				+ searchingKeywords + "')) as rank " + "from Questions where Questions.question_words @@ to_tsquery('"
-				+ searchingKeywords + "') order by rank desc";
+		String sql = "SELECT question_name, question_id, question_description, TS_RANK(Questions.question_words, TO_TSQUERY('"
+				+ searchingKeywords + "')) AS rank " + "FROM Questions WHERE Questions.question_words @@ TO_TSQUERY('"
+				+ searchingKeywords + "') ORDER BY rank DESC";
 		try {
 			connection = ConnectionUtil.getConnection();
 			prepareStatement = connection.prepareStatement(sql);

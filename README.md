@@ -4,6 +4,5 @@
 ##### You can follow your interested topics where many people will post their     questions.
 
 #### Admin:
-##### Admin login : Email - 'admin@gmail.com' Password: 'admin'
 ##### First admin has to add more topics, so that user can able to post questions on that topic. User posted question will comes under that topic.
 ##### Admin should add atleast 5 topics.
